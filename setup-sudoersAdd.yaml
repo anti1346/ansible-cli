@@ -14,15 +14,15 @@
       register: passwd_users
       changed_when: false
       check_mode: no
-    loop: "{{ sudo_users }}"
-
+      loop: "{{ sudo_users }}"
+    
     - name: Add sudoers permission for passwd users
       lineinfile:
         path: /etc/sudoers.d/ansible
         line: '{{ item }} ALL=(ALL) NOPASSWD: ALL'
         create: true
         validate: 'visudo -cf %s'
-      with_items: "{{ passwd_users.stdout_lines }}"
-      when: item != 'root'
+      with_items: "{{ sudo_users }}"
+      when: item in passwd_users.stdout_lines
       tags:
         - sudoers
