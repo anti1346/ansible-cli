@@ -177,21 +177,5 @@
       tags:
         - start_apache
         - restart_apache
-      when: ansible_os_family == 'RedHat' or ansible_os_family == 'Debian' and apache_status.rc == 0
-
-
-    - name: Start Apache web server
-      shell: /usr/local/apache/bin/apachectl start
-      # shell: /usr/local/apache/bin/apachectl -k start -e 'PassEnv ssl_key_password'
-      # environment:
-      #   ssl_key_password: "{{ ssl_key_password }}"
       when: ansible_os_family == 'RedHat' or ansible_os_family == 'Debian'
-      tags: 
-        - start_apache
-
-    - name: Restart Apache web server
-      shell: /usr/local/apache/bin/apachectl -k graceful
-      when: ansible_os_family == 'RedHat' or ansible_os_family == 'Debian'
-      tags:
-        - restart_apache
 
