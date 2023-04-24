@@ -1,0 +1,24 @@
+---
+- name: icmp ping
+  hosts: all
+  gather_facts: false
+  vars:
+    - google_ping: 8.8.8.8
+
+  tasks:
+    - name: icmp ping test
+      shell: ping -c3 -W3 {{ google_ping }}
+      args:
+        warn: no
+      register: result_ping
+      ignore_errors: true
+      
+    - set_fact:
+        available: "{{ result_ping.rc == 0 }}"
+
+    - setup:
+      when: result_ping.rc == 0
+      
+    - name: icmp ping test - debug result
+      debug:
+        msg: "{{ result_ping }}"
