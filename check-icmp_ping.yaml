@@ -1,4 +1,5 @@
 ---
+# ansible -i ./inventory localhost -m shell -a "ping -c3 -W3 8.8.8.8"
 - name: icmp ping
   hosts: all
   gather_facts: false
