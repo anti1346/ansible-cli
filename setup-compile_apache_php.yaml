@@ -1,0 +1,179 @@
+---
+- name: Compile Apache and PHP from source
+  hosts: all
+  become: true
+  vars:
+    apache_version: 2.4.57
+    apr_version: 1.7.4
+    apr_util_version: 1.6.3
+    pcre_version: 8.45
+    php_version: 8.1.18
+    apache_install_dir: /usr/local/apache
+    php_install_dir: /usr/local/php
+    ssl_key_password: "my_secure_password"
+  tasks:
+    - name: Update apt cache (Ubuntu/Debian)
+      apt:
+        update_cache: true
+      when: ansible_os_family == 'Debian'
+
+    - name: Install required packages
+      package:
+        name:
+          - gcc
+          - make
+          - zlib1g-dev
+          - libssl-dev
+          - libxml2-dev
+          - libjpeg-dev
+          - libpng-dev
+          - libwebp-dev
+          - libxpm-dev
+          - libonig-dev
+          - libcurl4-openssl-dev
+          - libtidy-dev
+          - libpcre3-dev
+          - build-essential
+          - libexpat1-dev
+          - pkg-config
+          - libsqlite3-dev
+        state: present
+      when: ansible_os_family == 'Debian'
+
+    - name: Install required packages
+      package:
+        name:
+          - gcc
+          - make
+          - zlib-devel
+          - openssl-devel
+          - libxml2-devel
+          - libjpeg-devel
+          - libpng-devel
+          - libwebp-devel
+          - libxpm-devel
+          - oniguruma-devel
+          - libcurl-devel
+          - libtidy-devel
+        state: present
+      when: ansible_os_family == 'RedHat'
+
+    - name: Download and extract Apache source
+      get_url:
+        url: "https://downloads.apache.org/httpd/httpd-{{ apache_version }}.tar.gz"
+        dest: "/tmp/httpd-{{ apache_version }}.tar.gz"
+      become: yes
+
+    - name: Extract Apache source
+      unarchive:
+        src: "/tmp/httpd-{{ apache_version }}.tar.gz"
+        dest: "/tmp/"
+        remote_src: yes
+      become: yes
+
+    - name: Download and extract APR source
+      get_url:
+        url: "https://downloads.apache.org/apr/apr-{{ apr_version }}.tar.gz"
+        dest: "/tmp/apr-{{ apr_version }}.tar.gz"
+      become: yes
+
+    - name: Extract APR source
+      unarchive:
+        src: "/tmp/apr-{{ apr_version }}.tar.gz"
+        dest: "/tmp/"
+        remote_src: yes
+      become: yes
+
+    - name: Download and extract APR-util source
+      get_url:
+        url: "https://downloads.apache.org/apr/apr-util-{{ apr_util_version }}.tar.gz"
+        dest: "/tmp/apr-util-{{ apr_util_version }}.tar.gz"
+      become: yes
+
+    - name: Extract APR-util source
+      unarchive:
+        src: "/tmp/apr-util-{{ apr_util_version }}.tar.gz"
+        dest: "/tmp/"
+        remote_src: yes
+      become: yes
+
+    - name: Move APR source to Apache srclib directory
+      command: "mv -n /tmp/apr-{{ apr_version }} /tmp/httpd-{{ apache_version }}/srclib/apr/"
+      become: yes
+
+    - name: Move APR-util source to Apache srclib directory
+      command: "mv -n /tmp/apr-util-{{ apr_util_version }} /tmp/httpd-{{ apache_version }}/srclib/apr-util/"
+      become: yes
+
+    - name: Download and extract PCRE source
+      get_url:
+        url: "https://jaist.dl.sourceforge.net/project/pcre/pcre/{{ pcre_version }}/pcre-{{ pcre_version }}.tar.gz"
+        dest: "/tmp/pcre-{{ pcre_version }}.tar.gz"
+      become: yes
+
+    - name: Extract PCRE source
+      unarchive:
+        src: "/tmp/pcre-{{ pcre_version }}.tar.gz"
+        dest: "/tmp/"
+        remote_src: yes
+      become: yes
+
+    - name: Configure and install PCRE
+      become: yes
+      shell: |
+        cd /tmp/pcre-{{ pcre_version }}
+        ./configure --prefix=/usr/local/pcre --enable-utf8 --enable-unicode-properties
+        make
+        make install
+
+    - name: Configure and install Apache
+      become: yes
+      shell: |
+        cd /tmp/httpd-{{ apache_version }}
+        ./configure --prefix={{ apache_install_dir }} --with-included-apr --with-pcre=/usr/local/pcre/bin/pcre-config --enable-mods-shared=all --enable-ssl --with-ssl --with-libxml2 --with-jpeg --with-png --with-webp --with-xpm --with-tidy --with-curl
+        make
+        make install
+      args:
+        chdir: /tmp/httpd-{{ apache_version }}
+
+    - name: Download PHP source code
+      get_url:
+        url: "https://www.php.net/distributions/php-{{ php_version }}.tar.gz"
+        dest: /tmp/php-{{ php_version }}.tar.gz
+
+    - name: Extract PHP source code
+      unarchive:
+        src: /tmp/php-{{ php_version }}.tar.gz
+        dest: /tmp
+        remote_src: yes
+        # extra_opts: [--strip-components=1]
+
+    - name: Configure and install PHP
+      shell: |
+        cd /tmp/php-{{ php_version }}
+        ./configure --prefix={{ php_install_dir }} --with-apxs2={{ apache_install_dir }}/bin/apxs --enable-gd --with-mysqli=mysqlnd --with-pdo-mysql=mysqlnd --with-zlib --with-openssl --with-libxml --with-jpeg --with-webp --with-xpm --with-tidy --with-curl
+        make
+        make install
+      args:
+        chdir: /tmp/php-{{ php_version }}
+
+    - name: Configure Apache to use PHP
+      lineinfile:
+        path: "{{ apache_install_dir }}/conf/httpd.conf"
+        line: |
+          AddType application/x-httpd-php .php
+          AddType application/x-httpd-php-source .phps
+        state: present
+        backup: yes
+
+    - name: Start Apache web server
+      shell: /usr/local/apache/bin/apachectl start
+      # shell: /usr/local/apache/bin/apachectl -k start -e 'PassEnv ssl_key_password'
+      # environment:
+      #   ssl_key_password: "{{ ssl_key_password }}"
+      when: ansible_os_family == 'RedHat' or ansible_os_family == 'Debian'
+
+    - name: Restart Apache web server
+      shell: /usr/local/apache/bin/apachectl graceful
+      when: ansible_os_family == 'RedHat' or ansible_os_family == 'Debian'
+
