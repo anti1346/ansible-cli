@@ -1,0 +1,27 @@
+---
+- name: Set ownership and permissions for /etc/hosts file
+  hosts: all
+  become: true
+  gather_facts: true
+
+  tasks:
+    - name: Set ownership and permissions for /etc/hosts file
+      file:
+        path: /etc/hosts
+        owner: root
+        group: root
+        mode: '0600'
+      when: ansible_facts['distribution'] == 'Ubuntu' or (ansible_facts['distribution'] == 'CentOS' and ansible_facts['lsb']['major_release'] | int >= 7)
+      register: hosts_file_result
+
+    - name: Display the result of setting ownership and permissions for /etc/hosts file
+      debug:
+        var: hosts_file_result
+      when: hosts_file_result.changed
+      tags: set_hosts
+
+    - name: Skip the task if the ownership and permissions of /etc/hosts file are already set correctly
+      debug:
+        msg: "Ownership and permissions of /etc/hosts file are already set correctly"
+      when: not hosts_file_result.changed
+      tags: set_hosts
