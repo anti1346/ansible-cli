@@ -1,0 +1,28 @@
+---
+- name: Add sudoers file permission for users in passwd file
+  hosts: all
+  become: true
+
+  vars:
+    sudo_users:
+      - user1
+      - user2
+
+  tasks:
+    - name: Get list of users in passwd file
+      shell: cat /etc/passwd | awk -F: {{ item }}
+      register: passwd_users
+      changed_when: false
+      check_mode: no
+    loop: "{{ sudo_users }}"
+
+    - name: Add sudoers permission for passwd users
+      lineinfile:
+        path: /etc/sudoers.d/ansible
+        line: '{{ item }} ALL=(ALL) NOPASSWD: ALL'
+        create: true
+        validate: 'visudo -cf %s'
+      with_items: "{{ passwd_users.stdout_lines }}"
+      when: item != 'root'
+      tags:
+        - sudoers
