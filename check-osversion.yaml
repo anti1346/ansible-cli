@@ -1,0 +1,26 @@
+- name: Check OS version
+  hosts: all
+  tasks:
+    - name: Show /etc/redhat-release on RHEL
+      when: ansible_distribution == "RedHat"
+      block:
+        - name: Display /etc/redhat-release
+          shell:
+            cmd: cat /etc/redhat-release
+          register: var_redhat
+
+        - name: Debug RHEL version
+          debug:
+            var: var_redhat.stdout_lines
+
+    - name: Show /etc/lsb-release on Ubuntu
+      when: ansible_distribution == "Ubuntu"
+      block:
+        - name: Display /etc/lsb-release
+          shell:
+            cmd: cat /etc/lsb-release
+          register: var_ubuntu
+
+        - name: Debug Ubuntu version
+          debug:
+            var: var_ubuntu.stdout_lines
