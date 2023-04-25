@@ -9,8 +9,8 @@
   tasks:
     - name: icmp ping test
       shell: ping -c3 -W3 {{ google_ping }}
-      args:
-        warn: no
+      # args:
+      #   warn: no
       register: result_ping
       ignore_errors: true
       
