@@ -1,3 +1,4 @@
+###[U-09]/etc/hosts 파일 소유자 및 권한 설정
 ---
 - name: Set ownership and permissions for /etc/hosts file
   hosts: all

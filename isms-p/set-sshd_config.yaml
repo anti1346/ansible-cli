@@ -1,0 +1,20 @@
+###[U-1]root 계정 원격 접속 제한
+---
+- name: Update sshd_config for PermitRootLogin
+  hosts: all
+  become: true
+  gather_facts: true
+
+  tasks:
+    - name: Check if PermitRootLogin needs to be updated
+      shell: grep -q '^PermitRootLogin\s*\(yes\|no\)' /etc/ssh/sshd_config
+      register: permit_root_login_check
+      changed_when: false
+      check_mode: no
+
+    - name: Update PermitRootLogin to no
+      lineinfile:
+        path: /etc/ssh/sshd_config
+        regex: '^#?\s*PermitRootLogin\s+'
+        line: 'PermitRootLogin no'
+      when: permit_root_login_check.rc == 1

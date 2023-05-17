@@ -1,0 +1,21 @@
+###[U-54]Session Timeout 설정
+---
+- name: Update /etc/profile
+  hosts: all
+  become: true
+  gather_facts: true
+
+  tasks:
+    - name: Set TMOUT variable in /etc/profile
+      lineinfile:
+        path: /etc/profile
+        line: "TMOUT=600"
+        regexp: "^TMOUT="
+        state: present
+
+    - name: Export TMOUT variable in /etc/profile
+      lineinfile:
+        path: /etc/profile
+        line: "export TMOUT"
+        regexp: "^export TMOUT"
+        state: present

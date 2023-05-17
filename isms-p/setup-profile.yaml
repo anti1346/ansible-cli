@@ -1,0 +1,14 @@
+###[U-14]사용자, 시스템 시작파일 및 환경파일 소유자 및 권한 설정
+---
+- name: Set ownership and permissions for /etc/profile
+  hosts: all
+  become: true
+  gather_facts: true
+
+  tasks:
+    - name: Set ownership and permissions for /etc/profile
+      file:
+        path: /etc/profile
+        owner: root
+        group: root
+        mode: '0644'

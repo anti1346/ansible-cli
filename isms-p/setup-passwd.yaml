@@ -1,0 +1,14 @@
+###[U-07]/etc/passwd 파일 소유자 및 권한 설정
+---
+- name: Set ownership and permissions for /etc/passwd
+  hosts: all
+  become: true
+  gather_facts: true
+
+  tasks:
+    - name: Set ownership and permissions for /etc/passwd
+      file:
+        path: /etc/passwd
+        owner: root
+        group: root
+        mode: '0644'
