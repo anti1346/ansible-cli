@@ -1,0 +1,16 @@
+---
+- name: Create Linux User
+  hosts: all
+  become: true
+  vars:
+    username: mysql
+
+  tasks:
+    - name: Create Linux User
+      user:
+        name: "{{ username }}"
+        shell: /bin/false
+        createhome: yes
+        home: "/usr/local/{{ username }}"
+        state: present
+      become: true

@@ -1,5 +1,6 @@
 - name: Check OS version
   hosts: all
+
   tasks:
     - name: Show /etc/redhat-release on RHEL
       when: ansible_distribution == "RedHat"
@@ -24,3 +25,4 @@
         - name: Debug Ubuntu version
           debug:
             var: var_ubuntu.stdout_lines
+

@@ -1,0 +1,24 @@
+---
+- name: Delete User
+  hosts: all
+  become: true
+  tasks:
+    - name: Remove System Users
+      user:
+        name: "{{ item }}"
+        state: absent
+        remove: yes
+      loop:
+        - adm
+        - lp
+        - sync
+        - shutdown
+        - halt
+        - news
+        - uucp
+        - operator
+        - games
+        - gopher
+        - nfsnobody
+        - squid
+      ignore_errors: yes

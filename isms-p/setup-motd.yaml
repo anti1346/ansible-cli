@@ -1,0 +1,21 @@
+---
+- name: Configure motd
+  hosts: all
+  become: true
+
+  tasks:
+    - name: Create motd file
+      copy:
+        dest: /etc/motd
+        content: |
+          Warnning!!
+          This system is for the use of authorized users only.
+          Current time is {{ ansible_date_time.time }}.
+      notify: Restart ssh service
+
+  handlers:
+    - name: Restart ssh service
+      service:
+        name: ssh
+        state: restarted
+

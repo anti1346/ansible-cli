@@ -1,0 +1,25 @@
+---
+- name: limit type change
+  hosts: all
+  become: true
+
+  tasks:
+    - name: nofile
+      pam_limits:
+        domain: '*'
+        limit_type: '{{ item }}'
+        limit_item: nofile
+        value: 65535
+      with_items:
+        - soft
+        - hard
+
+    - name: nproc
+      pam_limits:
+        domain: '*'
+        limit_type: '{{ item }}'
+        limit_item: nproc
+        value: 65535
+      with_items:
+        - soft
+        - hard
