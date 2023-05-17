@@ -1,0 +1,31 @@
+---
+- name: Set http_proxy and https_proxy
+  hosts: all
+  become: true
+
+  tasks:
+    - name: Set http_proxy environment variable
+      ansible.builtin.set_fact:
+        http_proxy: "http://111.111.111.111:8080"
+
+    - name: Set https_proxy environment variable
+      ansible.builtin.set_fact:
+        https_proxy: "http://111.111.111.222:8080"
+
+    - name: Check http_proxy environment variable
+      ansible.builtin.shell: echo $http_proxy
+      register: http_proxy_output
+      changed_when: false
+
+    - name: Check https_proxy environment variable
+      ansible.builtin.shell: echo $https_proxy
+      register: https_proxy_output
+      changed_when: false
+
+    - name: Print http_proxy output
+      ansible.builtin.debug:
+        var: http_proxy_output.stdout
+
+    - name: Print https_proxy output
+      ansible.builtin.debug:
+        var: https_proxy_output.stdout
