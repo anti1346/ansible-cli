@@ -1,0 +1,14 @@
+###[U-11]/etc/rsyslog.conf 파일 소유자 및 권한 설정
+---
+- name: Set ownership and permissions for rsyslog.conf
+  hosts: all
+  become: true
+  gather_facts: true
+
+  tasks:
+    - name: Set ownership and permissions for rsyslog.conf
+      file:
+        path: /etc/rsyslog.conf
+        owner: root
+        group: root
+        mode: '0640'

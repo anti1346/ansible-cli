@@ -1,0 +1,23 @@
+###[U-22]cron 파일 소유자 및 권한 설정 
+---
+- name: Set ownership and permissions for cron.deny and cron.allow files
+  hosts: all
+  become: true
+  gather_facts: true
+
+  tasks:
+    - name: Set ownership and permissions for cron.deny file
+      file:
+        path: /etc/cron.deny
+        owner: root
+        group: root
+        mode: '0640'
+      when: ansible_facts['ansible_file_exists']|default({})|bool and ansible_facts['ansible_file_exists']['cron_deny']|default({})|bool
+
+    - name: Set ownership and permissions for cron.allow file
+      file:
+        path: /etc/cron.allow
+        owner: root
+        group: root
+        mode: '0640'
+      when: ansible_facts['ansible_file_exists']|default({})|bool and ansible_facts['ansible_file_exists']['cron_allow']|default({})|bool
