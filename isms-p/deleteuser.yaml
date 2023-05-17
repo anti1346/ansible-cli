@@ -2,6 +2,7 @@
 - name: Delete User
   hosts: all
   become: true
+
   tasks:
     - name: Remove System Users
       user:
