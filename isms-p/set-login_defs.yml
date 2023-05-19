@@ -1,0 +1,33 @@
+---
+- name: Modify login.defs file
+  hosts: all
+  become: yes
+
+  tasks:
+    - name: Update PASS_MAX_DAYS
+      lineinfile:
+        path: /etc/login.defs
+        regex: '^PASS_MAX_DAYS\s*99999'
+        line: 'PASS_MAX_DAYS    90'
+        backup: yes
+
+    - name: Update PASS_MIN_DAYS
+      lineinfile:
+        path: /etc/login.defs
+        regex: '^PASS_MIN_DAYS\s*0'
+        line: 'PASS_MIN_DAYS    1'
+        backup: yes
+
+    - name: Update PASS_WARN_AGE
+      lineinfile:
+        path: /etc/login.defs
+        regex: '^PASS_WARN_AGE\s*7'
+        line: 'PASS_WARN_AGE    7'
+        backup: yes
+
+    - name: Update PASS_MIN_LEN
+      lineinfile:
+        path: /etc/login.defs
+        regex: '^#PASS_MIN_LEN'
+        line: 'PASS_MIN_LEN    8'
+        backup: yes
