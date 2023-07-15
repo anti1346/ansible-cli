@@ -2,10 +2,16 @@
 - name: Delete user
   hosts: all
   become: true
+
   tasks:
-    - name: Delete user
+    - name: 사용자 삭제
       user:
         name: "{{ USER_NAME }}"
+        state: absent
+
+    - name: sudoers.d 파일 삭제
+      file:
+        path: "/etc/sudoers.d/{{ USER_NAME }}"
         state: absent
 
 
