@@ -1,5 +1,5 @@
 ---
-- name: Create a personal account
+- name: Create user
   hosts: all
   become: true
 
@@ -12,10 +12,12 @@
         home: "/home/users/{{ USER_NAME }}"
         state: present
       become: true
+
     - name: 패스워드 변경
       user:
         name: "{{ USER_NAME }}"
         password: "{{ PASSWORD | password_hash('sha512') }}"
+
     - name: sudoers.d 추가
       copy:
        content: |
