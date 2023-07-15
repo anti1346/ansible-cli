@@ -26,3 +26,6 @@
        mode: 0440
        validate: "/usr/sbin/visudo -c -f '%s'"
        
+
+##### ansible-playbook execute
+# ansible-playbook create_a_personal_account.yaml --extra-vars "USER_NAME=user1 PASSWORD=user1"
