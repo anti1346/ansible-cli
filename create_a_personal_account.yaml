@@ -1,0 +1,28 @@
+---
+- name: Create a personal account
+  hosts: all
+  become: true
+
+  tasks:
+    - name: 사용자 생성
+      user:
+        name: "{{ USER_NAME }}"
+        shell: /bin/bash
+        createhome: yes
+        home: "/home/users/{{ USER_NAME }}"
+        state: present
+      become: true
+    - name: 패스워드 변경
+      user:
+        name: "{{ USER_NAME }}"
+        password: "{{ PASSWORD | password_hash('sha512') }}"
+    - name: sudoers.d 추가
+      copy:
+       content: |
+         %{{USER_NAME}} ALL=(ALL) NOPASSWD: ALL
+       dest: "/etc/sudoers.d/{{ USER_NAME }}"
+       owner: root
+       group: root
+       mode: 0440
+       validate: "/usr/sbin/visudo -c -f '%s'"
+       
