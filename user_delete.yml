@@ -1,0 +1,12 @@
+---
+- name: Delete user
+  hosts: all
+  become: true
+  tasks:
+    - name: Delete user
+      user:
+        name: "{{ USER_NAME }}"
+        state: absent
+
+#####
+# ansible-playbook -i inventory.ini user_delete.yml --extra-vars "USER_NAME=<삭제할_사용자_이름>"
