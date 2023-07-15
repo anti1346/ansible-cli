@@ -19,7 +19,7 @@
     - name: sudoers.d 추가
       copy:
        content: |
-         %{{USER_NAME}} ALL=(ALL) NOPASSWD: ALL
+         {{ USER_NAME }} ALL=(ALL) NOPASSWD: ALL
        dest: "/etc/sudoers.d/{{ USER_NAME }}"
        owner: root
        group: root
