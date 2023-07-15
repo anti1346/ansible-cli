@@ -28,4 +28,5 @@
        
 
 ##### ansible-playbook execute
-# ansible-playbook create_a_personal_account.yaml --extra-vars "USER_NAME=user1 PASSWORD=user1"
+# ansible-playbook -i inventory.ini user_create.yml --extra-vars "username=<생성할_사용자_이름> password=<사용자_암호>"
+
