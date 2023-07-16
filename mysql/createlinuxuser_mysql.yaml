@@ -2,26 +2,27 @@
 - name: Create Linux User
   hosts: all
   become: true
+  
   vars:
-    username: mysql
-    uid: 121
-    gid: 121
+    USER_NAME: mysql
+    UID: 121
+    GID: 121
 
   tasks:
     - name: Create Linux Group
       group:
-        name: "{{ username }}"
-        gid: "{{ gid }}"
+        name: "{{ USER_NAME }}"
+        GID: "{{ GID }}"
         state: present
       become: true
 
     - name: Create Linux User
       user:
-        name: "{{ username }}"
-        uid: "{{ uid }}"
-        group: "{{ username }}"
+        name: "{{ USER_NAME }}"
+        UID: "{{ UID }}"
+        group: "{{ USER_NAME }}"
         shell: /bin/false
         create_home: yes
-        home: "/usr/local/{{ username }}"
+        home: "/usr/local/{{ USER_NAME }}"
         state: present
       become: true
