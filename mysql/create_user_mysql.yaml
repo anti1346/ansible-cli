@@ -26,3 +26,7 @@
         home: "/usr/local/{{ USER_NAME }}"
         state: present
       become: true
+
+
+##### ansible-playbook execute
+# ansible-playbook -i inventory.ini create_user_mysql.yaml
