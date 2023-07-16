@@ -29,3 +29,4 @@
     - name: Print https_proxy output
       ansible.builtin.debug:
         var: https_proxy_output.stdout
+
