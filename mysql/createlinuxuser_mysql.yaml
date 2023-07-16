@@ -12,14 +12,14 @@
     - name: Create Linux Group
       group:
         name: "{{ USER_NAME }}"
-        GID: "{{ GID }}"
+        gid: "{{ GID }}"
         state: present
       become: true
 
     - name: Create Linux User
       user:
         name: "{{ USER_NAME }}"
-        UID: "{{ UID }}"
+        uid: "{{ UID }}"
         group: "{{ USER_NAME }}"
         shell: /bin/false
         create_home: yes
