@@ -1,5 +1,4 @@
 ---
-# ansible -i ./inventory localhost -m shell -a "ping -c3 -W3 8.8.8.8"
 - name: icmp ping
   hosts: all
   gather_facts: false
@@ -23,3 +22,10 @@
     - name: icmp ping test - debug result
       debug:
         msg: "{{ result_ping }}"
+
+
+##### ansible
+# ansible -i ./inventory localhost -m shell -a "ping -c3 -W3 8.8.8.8"
+
+##### ansible-playbook execute
+# ansible-playbook -i inventory.ini check-icmp_ping.yaml --limit localhost
