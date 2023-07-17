@@ -2,8 +2,9 @@
 - name: icmp ping
   hosts: all
   gather_facts: false
+  
   vars:
-    - google_ping: 8.8.8.8
+    google_ping: 8.8.8.8
 
   tasks:
     - name: icmp ping test
