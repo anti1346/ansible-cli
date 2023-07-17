@@ -1,3 +1,4 @@
+---
 - name: Check OS version
   hosts: all
   become: true
