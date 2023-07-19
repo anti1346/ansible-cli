@@ -10,7 +10,7 @@
     - name: Read hosts file
       shell: cat /etc/hosts
       register: hosts_file_content
-      tags: view_hosts_file check_hosts_line
+      tags: view_hosts_file
 
     # - name: Display hosts file content
     #   debug:
