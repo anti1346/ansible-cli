@@ -7,6 +7,16 @@
     new_host_entry: "8.8.8.8 www.google.com"
 
   tasks:
+    - name: Read hosts file
+      shell: cat /etc/hosts
+      register: hosts_file_content
+      tags: view_hosts_file
+
+    - name: Display hosts file content
+      debug:
+        var: hosts_file_content.stdout
+      tags: view_hosts_file
+
     - name: Add entry to hosts file
       block:
         - lineinfile:
@@ -36,6 +46,7 @@
 
 
 ### ansible-playbook execute
-# ansible-playbook edit_hosts_file.yml
-# ansible-playbook isms-p/edit_hosts_file.yml --tags "add_hosts_entry"
+# ansible-playbook isms-p/edit_hosts_file.yml --syntax-check  
+# ansible-playbook isms-p/edit_hosts_file.yml
+# ansible-playbook isms-p/edit_hosts_file.yml --tags "add_hosts_entry" --limit node3
 
