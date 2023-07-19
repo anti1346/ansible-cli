@@ -44,13 +44,13 @@
         - change_hosts_permissions
 
     - name: Remove entry from hosts file
-      block:
-        - replace:
-            path: "{{ hosts_file_path }}"
-            regexp: "{{ new_host_entry }}"
-            state: absent
-          tags:
-            - remove_hosts_entry
+      replace:
+        path: "{{ hosts_file_path }}"
+        regexp: "{{ new_host_entry }}"
+        state: absent
+      when: line_exists|default(false)
+      tags:
+        - remove_hosts_entry
 
 
 
