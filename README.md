@@ -18,3 +18,7 @@ ansible-playbook check-icmp-ping.yml --limit localhost
 ```
 ansible-playbook -i ~/ansible-spec/inventory check-icmp-ping.yml --limit localhost
 ```
+
+```
+ansible-playbook -i ~/ansible-spec/inventory edit_hosts_file.yml --tags "add_hosts_entry"
+```
