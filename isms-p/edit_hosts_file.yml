@@ -12,9 +12,13 @@
       register: hosts_file_content
       tags: view_hosts_file
 
+    # - name: Display hosts file content
+    #   debug:
+    #     var: hosts_file_content.stdout
+    #   tags: view_hosts_file
     - name: Display hosts file content
       debug:
-        var: hosts_file_content.stdout
+        msg: "{{ hosts_file_content.stdout | to_nice_yaml }}"
       tags: view_hosts_file
 
     - name: Add entry to hosts file
