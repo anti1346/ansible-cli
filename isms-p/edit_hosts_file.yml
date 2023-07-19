@@ -9,54 +9,48 @@
 
   tasks:
     - name: Read hosts file
-      shell: cat /etc/hosts
+      shell: cat "{{ hosts_file_path }}"
       register: hosts_file_content
-      tags: view_hosts_file
+      tags:
+        - view_hosts_file
 
-    # - name: Display hosts file content
-    #   debug:
-    #     var: hosts_file_content.stdout
-    #   tags: view_hosts_file
-    # - name: Display hosts file content
-    #   debug:
-    #     msg: "{{ hosts_file_content.stdout | to_nice_yaml }}"
-    #   tags: view_hosts_file
     - name: Display hosts file content
       debug:
         msg: "{{ hosts_file_content.stdout }}"
-      tags: view_hosts_file
+      tags:
+        - view_hosts_file
 
     - name: Check if line exists
       set_fact:
-        line_exists: "{{ '8.8.8.8 www.google.com' in hosts_file_content.stdout }}"
-      tags: check_hosts_line
+        line_exists: "{{ new_host_entry in hosts_file_content.stdout }}"
+      tags:
+        - check_hosts_line
 
     - name: Add entry to hosts file
-      block:
-        - lineinfile:
-            path: "{{ hosts_file_path }}"
-            line: "{{ new_host_entry }}"
-          tags:
-            - add_hosts_entry
+      lineinfile:
+        path: "{{ hosts_file_path }}"
+        line: "{{ new_host_entry }}"
+      when: not line_exists
+      tags:
+        - add_hosts_entry
 
     - name: Change ownership and permissions of hosts file
-      block:
-        - file:
-            path: "{{ hosts_file_path }}"
-            owner: root
-            group: root
-            mode: "400"
-          tags:
-            - change_hosts_permissions
+      file:
+        path: "{{ hosts_file_path }}"
+        owner: root
+        group: root
+        mode: "400"
+      tags:
+        - change_hosts_permissions
 
     - name: Remove entry from hosts file
-      block:
-        - replace:
-            path: "{{ hosts_file_path }}"
-            regexp: "{{ new_host_entry }}"
-            state: absent
-          tags:
-            - remove_hosts_entry
+      replace:
+        path: "{{ hosts_file_path }}"
+        regexp: "{{ new_host_entry }}"
+        state: absent
+      when: line_exists
+      tags:
+        - remove_hosts_entry
 
 
 ### ansible-playbook execute
