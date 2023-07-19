@@ -30,7 +30,7 @@
       lineinfile:
         path: "{{ hosts_file_path }}"
         line: "{{ new_host_entry }}"
-      when: not line_exists
+      when: not line_exists|default(false)
       tags:
         - add_hosts_entry
 
