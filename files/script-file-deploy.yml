@@ -1,0 +1,12 @@
+---
+- name: 스크립트 파일 배포
+  hosts: all
+
+  tasks:
+    - name: 로컬에 있는 스크립트 파일을 원격 서버로 복사
+      copy:
+        src: /path/to/your_script.sh  # 로컬 스크립트 파일 경로
+        dest: /remote/path/your_script.sh  # 원격 서버에 복사될 경로
+        owner: your_user  # 스크립트 파일이 소유될 사용자 이름
+        group: your_group  # 스크립트 파일이 소유될 그룹 이름
+        mode: "0755"  # 스크립트 파일의 퍼미션 모드 (예: 0755)
