@@ -46,7 +46,7 @@
     - name: Remove entry from hosts file
       replace:
         path: "{{ hosts_file_path }}"
-        regexp: "{{ new_host_entry }}"
+        regexp: "^{{ new_host_entry.replace('.', '\\.') }}$"
         state: absent
       when: line_exists|default(false)
       tags:
