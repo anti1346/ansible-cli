@@ -10,7 +10,7 @@
     - name: Read hosts file
       shell: cat /etc/hosts
       register: hosts_file_content
-      tags: view_hosts_file
+      tags: view_hosts_file check_hosts_line
 
     # - name: Display hosts file content
     #   debug:
@@ -24,6 +24,11 @@
       debug:
         msg: "{{ hosts_file_content.stdout }}"
       tags: view_hosts_file
+
+    - name: Check if line exists
+      set_fact:
+        line_exists: "{{ '8.8.8.8 www.google.com' in hosts_file_content.stdout }}"
+      tags: check_hosts_line
 
     - name: Add entry to hosts file
       block:
