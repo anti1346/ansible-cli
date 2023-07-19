@@ -53,6 +53,7 @@
         - remove_hosts_entry
 
 
+
 ### ansible-playbook execute
 # ansible-playbook isms-p/edit_hosts_file.yml --syntax-check  
 # ansible-playbook isms-p/edit_hosts_file.yml
