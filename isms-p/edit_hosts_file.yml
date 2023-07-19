@@ -48,7 +48,7 @@
         path: "{{ hosts_file_path }}"
         regexp: "{{ new_host_entry }}"
         state: absent
-      when: line_exists
+      when: line_exists|default(false)
       tags:
         - remove_hosts_entry
 
