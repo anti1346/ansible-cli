@@ -1,6 +1,7 @@
 - name: Edit hosts file
   hosts: all
   become: true
+  gather_facts: false
 
   vars:
     hosts_file_path: "/etc/hosts"
