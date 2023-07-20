@@ -17,4 +17,4 @@
 
 
 ##### ansible-playbook execute
-# ansible-playbook -i /path/to/your_inventory_file install_mysql.yml
+# ansible-playbook -i -i inventory/hosts.ini mysql/install-mysql.yaml --limit mha
