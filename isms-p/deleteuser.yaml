@@ -26,4 +26,6 @@
         - proxy
         - list
         - gnats
+        - irc
+        - backup
       ignore_errors: yes
