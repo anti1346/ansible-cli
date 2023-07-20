@@ -1,0 +1,39 @@
+---
+- name: Add entries to hosts file
+  hosts: localhost
+  gather_facts: false
+  become: true
+
+  vars:
+    host_entries:
+      - "192.168.20.209  node4"
+      - "192.168.20.211  node1"
+      - "192.168.20.212  node2"
+      - "192.168.20.213  node3"
+
+  tasks:
+    - name: Read existing hosts file
+      shell: cat /etc/hosts
+      register: existing_hosts
+
+    - name: Add entries to hosts file
+      block:
+        - name: Create hosts file content with new entries
+          set_fact:
+            new_hosts_content: |
+              {% for entry in host_entries %}
+              {{ entry }}
+              {% endfor %}
+        - name: Update the hosts file
+          copy:
+            content: "{{ existing_hosts.stdout }}{{ new_hosts_content }}"
+            dest: /etc/hosts
+      notify: Reload Network
+
+  handlers:
+    - name: Reload Network
+      command: systemctl reload network
+
+
+##### ansible-playbook execute
+# ansible-playbook -i inventory/hosts.ini hosts-add.yaml

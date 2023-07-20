@@ -55,7 +55,7 @@
 
 
 ### ansible-playbook execute
-# ansible-playbook isms-p/edit_hosts_file.yml --syntax-check  
-# ansible-playbook isms-p/edit_hosts_file.yml
-# ansible-playbook isms-p/edit_hosts_file.yml --tags "add_hosts_entry" --limit node3
+# ansible-playbook isms-p/hosts-edit.yaml --syntax-check  
+# ansible-playbook isms-p/hosts-edit.yaml
+# ansible-playbook isms-p/hosts-edit.yaml --tags "add_hosts_entry" --limit node3
 
