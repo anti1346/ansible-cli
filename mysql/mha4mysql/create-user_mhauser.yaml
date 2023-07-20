@@ -8,13 +8,13 @@
     UID: 2001
     GID: 121
 
-  tasks:
-    - name: Create Linux Group
-      group:
-        name: "{{ USER_NAME }}"
-        gid: "{{ GID }}"
-        state: present
-      become: true
+  # tasks:
+  #   - name: Create Linux Group
+  #     group:
+  #       name: "{{ USER_NAME }}"
+  #       gid: "{{ GID }}"
+  #       state: present
+  #     become: true
 
     - name: Add user to existing group
       user:
