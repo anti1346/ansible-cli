@@ -3,6 +3,7 @@
 - name: Set up warning message for authorized users
   hosts: all
   become: true
+  gather_facts: false
 
   tasks:
     - name: Set up /etc/issue.net
