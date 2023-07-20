@@ -21,15 +21,15 @@
       tags:
         - update_hosts_file
 
-    - name: Check if the entry exists
-      shell: cat /etc/hosts | grep "### MySQL Hosts BEGIN"
+    - name: Display hosts file content
+      command: cat /etc/hosts | grep "### MySQL Hosts BEGIN"
       register: entry_check
       changed_when: false
       failed_when: false
       tags:
         - update_hosts_file
 
-    - name: Display hosts file content
+    - name: Show added hosts
       debug:
         msg: "{{ entry_check.stdout }}"
       when: entry_check.stdout != ""
