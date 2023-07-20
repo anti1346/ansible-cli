@@ -1,38 +1,49 @@
 ---
-- name: Add entries to hosts file
-  hosts: localhost
-  gather_facts: false
+- name: Add MySQL Hosts to Hosts File
+  hosts: all
   become: true
 
-  vars:
-    host_entries:
-      - "192.168.20.209  node4"
-      - "192.168.20.211  node1"
-      - "192.168.20.212  node2"
-      - "192.168.20.213  node3"
-
   tasks:
-    - name: Read existing hosts file
-      shell: cat /etc/hosts
-      register: existing_hosts
+    - name: Backup original hosts file
+      command: cp /etc/hosts /etc/hosts.bak
+      changed_when: false
+      ignore_errors: true
 
-    - name: Add entries to hosts file
-      block:
-        - name: Create hosts file content with new entries
-          set_fact:
-            new_hosts_content: |
-              {% for entry in host_entries %}
-              {{ entry }}
-              {% endfor %}
-        - name: Update the hosts file
-          copy:
-            content: "{{ existing_hosts.stdout }}{{ new_hosts_content }}"
-            dest: /etc/hosts
-      notify: Reload Network
+    - name: Append MySQL Hosts to hosts file
+      blockinfile:
+        path: /etc/hosts
+        marker: "### MySQL Hosts BEGIN"
+        block: |
+          ### MySQL Hosts
+          192.168.20.211 node1
+          192.168.20.212 node2
+          192.168.20.213 node3
+          192.168.20.209 monitor
+      tags:
+        - update_hosts_file
 
-  handlers:
-    - name: Reload Network
-      command: systemctl reload network
+    - name: Check if the entry exists
+      shell: cat /etc/hosts | grep "### MySQL Hosts BEGIN"
+      register: entry_check
+      changed_when: false
+      failed_when: false
+      tags:
+        - update_hosts_file
+
+    - name: Display hosts file content
+      debug:
+        msg: "{{ entry_check.stdout }}"
+      when: entry_check.stdout != ""
+      tags:
+        - update_hosts_file
+
+    - name: Rollback hosts file if changes were not applied
+      command: cp /etc/hosts.bak /etc/hosts
+      when: entry_check.stdout == ""
+      changed_when: false
+      ignore_errors: true
+      tags:
+        - update_hosts_file
 
 
 ##### ansible-playbook execute
