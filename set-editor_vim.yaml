@@ -6,3 +6,7 @@
   tasks:
     - name: Set editor using update-alternatives
       command: update-alternatives --set editor /usr/bin/vim.basic
+
+
+##### ansible-playbook execute
+# ansible-playbook -i inventory.ini set-editor_vim.yaml --limit localhost
