@@ -28,9 +28,9 @@
         name: "{{ USER_NAME }}"
         uid: "{{ UID }}"
         group: "{{ USER_NAME }}"
-        shell: /bin/false
+        shell: /bin/bash
         create_home: yes
-        home: "/usr/local/{{ USER_NAME }}"
+        home: "/home/{{ USER_NAME }}"
         state: present
       become: true
 
