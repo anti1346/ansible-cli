@@ -1,0 +1,8 @@
+---
+- name: Set editor to /usr/bin/vim.basic
+  hosts: all
+  become: true
+
+  tasks:
+    - name: Set editor using update-alternatives
+      command: update-alternatives --set editor /usr/bin/vim.basic
