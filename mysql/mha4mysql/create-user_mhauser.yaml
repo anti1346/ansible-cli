@@ -6,7 +6,7 @@
   vars:
     USER_NAME: mhauser
     UID: 2001
-    GID: 121
+    GROUP_NAME: mysql
 
   tasks:
   #   - name: Create Linux Group
@@ -27,7 +27,7 @@
       user:
         name: "{{ USER_NAME }}"
         uid: "{{ UID }}"
-        group: "{{ USER_NAME }}"
+        group: "{{ GROUP_NAME }}"
         shell: /bin/bash
         create_home: yes
         home: "/home/{{ USER_NAME }}"
