@@ -14,11 +14,10 @@
         path: /etc/hosts
         marker: "### MySQL Hosts BEGIN"
         block: |
-          ### MySQL Hosts
           192.168.20.211 node1
           192.168.20.212 node2
           192.168.20.213 node3
-          192.168.20.209 monitor
+          192.168.20.209 node4
       tags:
         - update_hosts_file
 
