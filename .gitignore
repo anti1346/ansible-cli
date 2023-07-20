@@ -2,3 +2,4 @@
 *.bk/*
 inventory/*
 ansible-spec.bk/*
+DLdir/*

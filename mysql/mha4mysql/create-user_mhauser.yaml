@@ -1,0 +1,32 @@
+---
+- name: Create Linux User
+  hosts: all
+  become: true
+  
+  vars:
+    USER_NAME: mhauser
+    UID: 2001
+    GID: 121
+
+  tasks:
+    - name: Create Linux Group
+      group:
+        name: "{{ USER_NAME }}"
+        gid: "{{ GID }}"
+        state: present
+      become: true
+
+    - name: Create Linux User
+      user:
+        name: "{{ USER_NAME }}"
+        uid: "{{ UID }}"
+        group: "{{ USER_NAME }}"
+        shell: /bin/false
+        create_home: yes
+        home: "/usr/local/{{ USER_NAME }}"
+        state: present
+      become: true
+
+
+##### ansible-playbook execute
+# ansible-playbook -i inventory.ini mysql/create_user_mysql.yaml
