@@ -8,7 +8,7 @@
     UID: 2001
     GID: 121
 
-  # tasks:
+  tasks:
   #   - name: Create Linux Group
   #     group:
   #       name: "{{ USER_NAME }}"
