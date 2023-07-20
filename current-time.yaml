@@ -1,0 +1,17 @@
+---
+- name: Display current time
+  hosts: localhost
+  gather_facts: false
+
+  tasks:
+    - name: Get current time
+      shell: date
+      register: current_time
+
+    - name: Display current time
+      debug:
+        var: current_time.stdout
+
+
+##### ansible-playbook execute
+# ansible-playbook -i inventory/hosts.ini current-time.yaml

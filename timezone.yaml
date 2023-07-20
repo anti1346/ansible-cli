@@ -1,3 +1,4 @@
+---
 - name: Set timezone to Asia/Seoul
   hosts: all
   become: yes
