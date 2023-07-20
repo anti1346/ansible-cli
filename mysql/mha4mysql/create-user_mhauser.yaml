@@ -16,6 +16,13 @@
         state: present
       become: true
 
+    - name: Add user to existing group
+      user:
+        name: "{{ USER_NAME }}"
+        groups: "{{ USER_NAME }},existing_group"
+        append: yes
+      become: true
+
     - name: Create Linux User
       user:
         name: "{{ USER_NAME }}"
@@ -29,4 +36,4 @@
 
 
 ##### ansible-playbook execute
-# ansible-playbook -i inventory.ini mysql/create_user_mysql.yaml
+# ansible-playbook -i inventory.ini mysql/mha4mysql/create-user_mhauser.yaml --limit mha
