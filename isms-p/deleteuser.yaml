@@ -22,4 +22,8 @@
         - gopher
         - nfsnobody
         - squid
+        - mail
+        - proxy
+        - list
+        - gnats
       ignore_errors: yes
