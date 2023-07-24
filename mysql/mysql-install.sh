@@ -12,43 +12,53 @@ cd /usr/local/src
 # Create MySQL data directory
 mkdir -p /usr/local/mysql/data
 
+# Create MySQL configuration file
+cat <<EOF > /usr/local/mysql/my.cnf
+### my.cnf
+[mysqld]
+basedir=/usr/local/mysql
+datadir=/usr/local/mysql/data
+socket=/tmp/mysql.sock
+user=mysql
+bind-address=0.0.0.0
+port=3306
+pid-file=/usr/local/mysql/data/mysqld.pid
+
+### general log
+general-log=TRUE
+general-log-file=/usr/local/mysql/data/general.log
+
+### error log
+log-error-verbosity=1
+log-error=/usr/local/mysql/data/error.log
+
+### slow query log
+slow-query-log=TRUE
+slow-launch-time=5
+slow-query-log-file=/usr/local/mysql/data/slow-query.log
+
+#skip-grant-tables=FALSE
+symbolic-links=FALSE
+skip-name-resolve=TRUE
+
+server-id=1
+binlog-format=ROW
+log-bin=/usr/local/mysql/data/mysql-bin
+sync-binlog=1
+relay-log=/usr/local/mysql/data/relay-log
+#relay-log-index=/usr/local/mysql/data/relay-log.index
+relay-log-purge=TRUE
+expire-logs-days=7
+log-slave-updates=TRUE
+EOF
+
 # Set ownership for MySQL directory
 chown -R mysql:mysql /usr/local/mysql
 
-# Create MySQL configuration file
-cat <<EOF > /usr/local/mysql/my.cnf
-[mysqld]
-basedir = /usr/local/mysql
-datadir = /usr/local/mysql/data
-socket = /tmp/mysql.sock
-user = mysql
-bind-address = 0.0.0.0
-port = 3306
-pid-file = /usr/local/mysql/data/mysqld.pid
+# Set ENV
+echo 'export PATH="/usr/local/mysql/bin:$PATH"' >> /etc/profile
 
-### general log
-general-log = 1
-general-log-file = /usr/local/mysql/data/general.log
+# Set Link
+sudo ln -s /usr/local/mysql/bin/mysql /usr/bin/mysql
+sudo ln -s /usr/local/mysql/bin/mysqlbinlog /usr/bin/mysqlbinlog
 
-### error log
-log-error = /usr/local/mysql/data/error.log
-
-skip-grant-tables
-
-server-id = 1
-binlog_format = mixed
-log_bin = mysql-bin
-
-slow_launch_time = 5
-### slow query log
-slow_query_log = TRUE
-slow_query_log_file = /usr/local/mysql/data/mysql-slow-query.log
-
-log_bin_trust_function_creators = 1
-skip_name_resolve
-
-max_allowed_packet = 1000M
-sync_binlog = 1
-
-sql_mode = "STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION"
-EOF
