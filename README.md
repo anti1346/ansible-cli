@@ -5,6 +5,19 @@
 ansible --version
 ```
 
+##### ansible.cfg
+```
+ansible-config init --disabled -t all > ansible.cfg
+```
+```
+vim ansible.cfg
+```
+```
+[defaults]
+inventory = ~/git-root/ansible-cli/inventory/hosts.ini
+host_key_checking = False
+```
+
 ##### ansible inventory
 ```
 ansible-inventory --graph
