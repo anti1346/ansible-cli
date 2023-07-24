@@ -1,0 +1,50 @@
+---
+- name: Check system users and groups
+  hosts: localhost
+  gather_facts: false
+
+  tasks:
+    - name: Get system users from /etc/passwd
+      getent:
+        database: passwd
+      register: passwd_entries
+      tags:
+        - passwd
+
+    - name: Display /etc/passwd contents
+      debug:
+        var: passwd_entries
+      tags:
+        - passwd
+
+    - name: Get system groups from /etc/group
+      getent:
+        database: group
+      register: group_entries
+      tags:
+        - group
+
+    - name: Display /etc/group contents
+      debug:
+        var: group_entries
+      tags:
+        - group
+
+    - name: Get shadow entries from /etc/shadow
+      getent:
+        database: shadow
+      register: shadow_entries
+      no_log: true  # To prevent displaying sensitive information in logs
+      tags:
+        - shadow
+
+    - name: Display /etc/shadow contents
+      debug:
+        var: shadow_entries
+      no_log: true  # To prevent displaying sensitive information in logs
+      tags:
+        - shadow
+
+
+##### ansible-playbook execute
+# ansible-playbook isms-p/view-passwd_group_shadow.yaml --tags passwd,group,shadow --limit localhost
