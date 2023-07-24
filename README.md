@@ -1,9 +1,23 @@
 # ansible-cli
 
+##### ansible install
+```
+sudo apt-add-repository ppa:ansible/ansible
+```
+```
+sudo apt-get update
+```
+```
+sudo apt-get install -y ansible
+```
+
 ##### ansible version
 ```
 ansible --version
 ```
+
+##### ansible ping test(ping module)
+ansible -m ping localhost
 
 ##### ansible.cfg
 ```
