@@ -1,20 +1,50 @@
 ---
-- name: Deploy and execute MySQL installation script
+---
+- name: Deploy and extract MySQL archive
   hosts: all
   become: true
+  gather_facts: false
+
+  vars:
+    mysql_archive: "mysql-8.0.34-linux-glibc2.28-x86_64.tar.gz"
+    mysql_extract_dir: "/usr/local/mysql"
+    mysql_install_dir: "/usr/local"
 
   tasks:
+    - name: Copy MySQL archive to the target host
+      copy:
+        src: "files/{{ mysql_archive }}"
+        dest: "/tmp/{{ mysql_archive }}"
+      tags:
+        - deploy
+
+    - name: Ensure the MySQL installation directory exists
+      file:
+        path: "{{ mysql_install_dir }}"
+        state: directory
+      tags:
+        - deploy
+
+    - name: Extract MySQL archive
+      unarchive:
+        src: "/tmp/{{ mysql_archive }}"
+        dest: "{{ mysql_extract_dir }}"
+        remote_src: yes
+      tags:
+        - deploy
+
     - name: Copy MySQL installation script to the remote host
       copy:
-        src: mysql-install.sh
-        dest: /usr/local/src/mysql-install.sh
+        src: mysql/mysql-install.sh
+        dest: /tmp/mysql-install.sh
         mode: 0755
 
     - name: Execute MySQL installation script
-      shell: /usr/local/src/mysql-install.sh
+      shell: /tmp/mysql-install.sh
       args:
         executable: /bin/bash
 
 
+
 ##### ansible-playbook execute
-# ansible-playbook -i inventory/hosts.ini mysql/install-mysql.yaml --limit mha
+# ansible-playbook mysql/install-mysql.yaml --limit localhost

@@ -3,11 +3,11 @@
 # Change directory to /usr/local/src
 cd /usr/local/src
 
-# Download MySQL tarball
-wget -q https://dev.mysql.com/get/Downloads/MySQL-8.0/mysql-8.0.34-linux-glibc2.28-x86_64.tar.gz
+# # Download MySQL tarball
+# wget -q https://dev.mysql.com/get/Downloads/MySQL-8.0/mysql-8.0.34-linux-glibc2.28-x86_64.tar.gz
 
-# Extract MySQL tarball
-tar xf mysql-8.0.34-linux-glibc2.28-x86_64.tar.gz -C /usr/local/mysql --strip-components=1
+# # Extract MySQL tarball
+# tar xf mysql-8.0.34-linux-glibc2.28-x86_64.tar.gz -C /usr/local/mysql --strip-components=1
 
 # Create MySQL data directory
 mkdir -p /usr/local/mysql/data
