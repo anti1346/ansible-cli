@@ -1,28 +1,25 @@
 ---
-- name: icmp ping
+- name: ICMP Ping Test
   hosts: all
-  # gather_facts: false
-  
+
   vars:
     google_ping: 8.8.8.8
 
   tasks:
-    - name: icmp ping test
-      shell: ping -c3 -W3 {{ google_ping }}
-      args:
-        warn: no
+    - name: Perform ICMP ping test
+      shell: ping -c 3 -W 3 {{ google_ping }}
       register: result_ping
       ignore_errors: true
-      
-    - set_fact:
+
+    - name: Check if host is reachable
+      set_fact:
         available: "{{ result_ping.rc == 0 }}"
 
-    - setup:
-      when: result_ping.rc == 0
-      
-    - name: icmp ping test - debug result
-      debug:
-        msg: "{{ result_ping }}"
+    - debug:
+        msg: "Host {{ inventory_hostname }} is {{ 'reachable' if available else 'unreachable' }}"
+
+
+
 
 
 ##### ansible

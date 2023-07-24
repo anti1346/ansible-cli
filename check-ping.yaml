@@ -14,4 +14,4 @@
 
 
 ##### ansible-playbook execute
-# ansible-playbook ping_test.yml --limit localhost
+# ansible-playbook check-ping.yml --limit localhost
