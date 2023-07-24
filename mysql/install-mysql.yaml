@@ -12,7 +12,7 @@
   tasks:
     - name: Copy MySQL archive to the target host
       copy:
-        src: "../files/{{ mysql_archive }}"
+        src: "/home/vagrant/ansible-cli/files/{{ mysql_archive }}"
         dest: "/tmp/{{ mysql_archive }}"
         remote_src: yes
       tags:
@@ -36,7 +36,7 @@
 
     - name: Copy MySQL installation script to the remote host
       copy:
-        src: "../mysql/mysql-install.sh"
+        src: "/home/vagrant/ansible-cli/mysql/mysql-install.sh"
         dest: "/tmp/mysql-install.sh"
         mode: "0755"
       tags:
