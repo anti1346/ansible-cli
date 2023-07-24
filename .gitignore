@@ -2,5 +2,5 @@
 *.bk/*
 ansible-spec.bk/*
 DLdir/*
-#ansible.cfg
-#inventory/*
+ansible.cfg
+inventory/*
