@@ -15,10 +15,8 @@
         src: "../files/{{ mysql_archive }}"
         dest: "/tmp/{{ mysql_archive }}"
         remote_src: yes
-      # when: not (ansible_check_mode or (mysql_archive | stat).exists)
-      when: not (ansible_check_mode or (mysql_archive | ansible.builtin.stat).exists)
       tags:
-        - deploy
+        - package-download
 
     - name: Ensure the MySQL installation directory exists
       file:
