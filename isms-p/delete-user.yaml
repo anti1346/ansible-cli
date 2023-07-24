@@ -29,3 +29,8 @@
         - irc
         - backup
       ignore_errors: yes
+
+
+
+##### ansible-playbook execute
+# ansible-playbook isms-p/delete-user.yaml --limit localhost
