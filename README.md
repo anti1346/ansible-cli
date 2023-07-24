@@ -17,7 +17,9 @@ ansible --version
 ```
 
 ##### ansible ping test(ping module)
+```
 ansible -m ping localhost
+```
 
 ##### ansible.cfg
 ```
