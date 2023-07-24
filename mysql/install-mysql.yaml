@@ -1,5 +1,4 @@
 ---
----
 - name: Deploy and extract MySQL archive
   hosts: all
   become: true
@@ -27,7 +26,7 @@
 
     - name: Extract MySQL archive
       unarchive:
-        src: "/tmp/{{ mysql_archive }}"
+        src: "files/{{ mysql_archive }}"
         dest: "{{ mysql_extract_dir }}"
         remote_src: yes
       tags:
@@ -35,14 +34,20 @@
 
     - name: Copy MySQL installation script to the remote host
       copy:
-        src: mysql/mysql-install.sh
-        dest: /tmp/mysql-install.sh
-        mode: 0755
+        src: "mysql/mysql-install.sh"
+        dest: "/tmp/mysql-install.sh"
+        mode: "0755"
+      tags:
+        - deploy
 
     - name: Execute MySQL installation script
       shell: /tmp/mysql-install.sh
       args:
         executable: /bin/bash
+      tags:
+        - deploy
+
+
 
 
 
