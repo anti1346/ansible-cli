@@ -16,7 +16,7 @@
         dest: "/tmp/{{ mysql_archive }}"
         remote_src: yes
       tags:
-        - package-download
+        - package-deploy
 
     - name: Ensure the MySQL installation directory exists
       file:
@@ -32,7 +32,7 @@
         remote_src: yes
         extra_opts: "--strip-components=1"
       tags:
-        - deploy
+        - unarchive
 
     - name: Copy MySQL installation script to the remote host
       copy:
