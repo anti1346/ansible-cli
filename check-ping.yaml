@@ -1,0 +1,17 @@
+---
+- name: Ping Test
+  hosts: all
+  tasks:
+    - name: Perform ping test
+      ping:
+      register: ping_result
+
+    - name: Display ping test result
+      debug:
+        msg: "Host {{ inventory_hostname }} is {{ 'reachable' if ping_result.ping else 'unreachable' }}"
+
+
+
+
+##### ansible-playbook execute
+# ansible-playbook ping_test.yml --limit localhost
