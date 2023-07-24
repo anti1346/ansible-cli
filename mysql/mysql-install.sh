@@ -53,7 +53,8 @@ log-slave-updates=TRUE
 EOF
 
 # Set ownership for MySQL directory
-chown -R mysql:mysql /usr/local/mysql
+sudo chown -R mysql:mysql /usr/local/mysql
+sudo chmod 750 /usr/local/mysql/data
 
 # Set ENV
 echo 'export PATH="/usr/local/mysql/bin:$PATH"' >> /etc/profile
