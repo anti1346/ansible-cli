@@ -1,6 +1,6 @@
 .git
 *.bk/*
-inventory/*
 ansible-spec.bk/*
 DLdir/*
-ansible.cfg
+#ansible.cfg
+#inventory/*
