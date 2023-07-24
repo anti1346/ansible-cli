@@ -10,11 +10,10 @@
     mysql_install_dir: "/usr/local/mysql"
 
   tasks:
-    - name: Copy MySQL archive to the target host
+    - name: Copy MySQL archive to the remote host
       copy:
-        src: "/home/vagrant/ansible-cli/files/{{ mysql_archive }}"
+        src: "../files/{{ mysql_archive }}"
         dest: "/tmp/{{ mysql_archive }}"
-        remote_src: yes
       tags:
         - package-deploy
 
@@ -36,7 +35,7 @@
 
     - name: Copy MySQL installation script to the remote host
       copy:
-        src: "/home/vagrant/ansible-cli/mysql/mysql-install.sh"
+        src: "../mysql/mysql-install.sh"
         dest: "/tmp/mysql-install.sh"
         mode: "0755"
       tags:
