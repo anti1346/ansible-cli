@@ -28,6 +28,10 @@
         - gnats
         - irc
         - backup
+        - landscape
+        - fwupd-refresh
+        - usbmux
+        - pollinate
       ignore_errors: yes
 
 
