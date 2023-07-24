@@ -1,7 +1,7 @@
 ---
 - name: icmp ping
   hosts: all
-  gather_facts: false
+  # gather_facts: false
   
   vars:
     google_ping: 8.8.8.8
