@@ -32,6 +32,8 @@
         - fwupd-refresh
         - usbmux
         - pollinate
+        - lxd
+        - uuidd
       ignore_errors: yes
 
 
