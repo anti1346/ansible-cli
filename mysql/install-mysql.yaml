@@ -26,7 +26,7 @@
 
     - name: Extract MySQL archive
       unarchive:
-        src: "../files/{{ mysql_archive }}"
+        src: "/tmp/{{ mysql_archive }}"
         dest: "{{ mysql_extract_dir }}"
         remote_src: yes
       tags:
