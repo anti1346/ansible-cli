@@ -61,5 +61,6 @@ echo 'export PATH="/usr/local/mysql/bin:$PATH"' >> /etc/profile
 
 # Set Link
 sudo ln -s /usr/local/mysql/bin/mysql /usr/bin/mysql
+sudo ln -s /usr/local/mysql/bin/mysqld /usr/bin/mysqld
+sudo ln -s /usr/local/mysql/bin/mysqld_safe /usr/bin/mysqld_safe
 sudo ln -s /usr/local/mysql/bin/mysqlbinlog /usr/bin/mysqlbinlog
-
