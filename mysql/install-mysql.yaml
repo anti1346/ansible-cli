@@ -53,7 +53,7 @@
 
 
 ##### ansible-playbook execute
-# ansible-playbook mysql/install-mysql.yaml --limit localhost
+# ansible-playbook -i inventory/hosts.ini mysql/install-mysql.yaml --limit localhost
 #
-# ansible-playbook mysql/install-mysql.yaml --limit localhost --tags package-deploy 
-# ansible-playbook mysql/install-mysql.yaml --limit localhost --tags unarchive,deploy
+# ansible-playbook -i inventory/hosts.ini mysql/install-mysql.yaml --limit localhost --tags package-deploy 
+# ansible-playbook -i inventory/hosts.ini mysql/install-mysql.yaml --limit localhost --tags unarchive,deploy
