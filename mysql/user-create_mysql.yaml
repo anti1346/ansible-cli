@@ -25,6 +25,7 @@
         create_home: yes
         home: "/home/{{ USER_NAME }}"
         state: present
+      comment: "MySQL User"
       become: true
 
 
