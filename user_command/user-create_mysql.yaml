@@ -14,3 +14,6 @@
         home: "/usr/local/{{ username }}"
         state: present
       become: true
+
+##### ansible-playbook execute
+# ansible-playbook -i inventory/hosts.ini user_command/user-create_mysql.yaml --limit localhost
