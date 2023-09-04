@@ -39,4 +39,4 @@
 
 
 ##### ansible-playbook execute
-# ansible-playbook isms-p/delete-user_default.yaml --limit localhost
+# ansible-playbook -i inventory/hosts.ini isms-p/delete-user_default.yaml --limit localhost
