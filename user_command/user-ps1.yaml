@@ -21,4 +21,4 @@
       ignore_errors: yes  # 이미 PS1이 있는 경우에도 무시하도록 설정합니다.
 
 ##### ansible-playbook execute
-# ansible-playbook -i user_command/user-ps1.yaml --limit localhost
+# ansible-playbook -i inventory/hosts.ini user_command/user-ps1.yaml --limit localhost
