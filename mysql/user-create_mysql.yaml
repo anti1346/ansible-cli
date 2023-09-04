@@ -14,7 +14,6 @@
         name: "{{ USER_NAME }}"
         gid: "{{ GID }}"
         state: present
-      become: true
 
     - name: Create MySQL Shell User
       user:
@@ -25,8 +24,11 @@
         create_home: yes
         home: "/home/{{ USER_NAME }}"
         state: present
-      comment: "MySQL User"
-      become: true
+
+    - name: Set MySQL User Comment
+      user:
+        name: "{{ USER_NAME }}"
+        comment: "MySQL User"
 
 
 ##### ansible-playbook execute
