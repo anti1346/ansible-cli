@@ -1,6 +1,6 @@
 ---
 - name: Configure root's PS1
-  hosts: your_target_host
+  hosts: all
   become: yes  # root 권한으로 실행합니다.
 
   tasks:
@@ -19,3 +19,6 @@
       become: yes
       become_user: root
       ignore_errors: yes  # 이미 PS1이 있는 경우에도 무시하도록 설정합니다.
+
+##### ansible-playbook execute
+# ansible-playbook -i user_command/user-ps1.yaml --limit localhost
