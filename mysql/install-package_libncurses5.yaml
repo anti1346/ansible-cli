@@ -14,3 +14,8 @@
         name: libncurses5
         state: present
       become: true
+
+
+
+##### ansible-playbook execute
+# ansible-playbook -i inventory/hosts.ini mysql/install-package_libncurses5.yaml --limit localhost
