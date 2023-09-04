@@ -23,7 +23,7 @@
         group: "{{ USER_NAME }}"
         shell: /bin/false
         create_home: yes
-        home: "/usr/local/{{ USER_NAME }}"
+        home: "/home/{{ USER_NAME }}"
         state: present
       become: true
 
