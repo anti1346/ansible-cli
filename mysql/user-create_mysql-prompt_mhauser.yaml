@@ -1,0 +1,22 @@
+---
+- name: Create MySQL User
+  hosts: your_mysql_host
+  become: yes
+  tasks:
+    - name: Install MySQL Python package
+      apt:
+        name: python-mysqldb
+      when: ansible_os_family == "Debian"
+
+    - name: Install MySQL Python package
+      yum:
+        name: MySQL-python
+      when: ansible_os_family == "RedHat"
+
+    - name: Create MySQL User
+      mysql_user:
+        name: your_username
+        password: your_password
+        host: localhost
+        priv: '*.*:ALL'
+        state: present

@@ -1,5 +1,5 @@
 ---
-- name: Create Linux User
+- name: Create Shell User (mysql)
   hosts: all
   become: true
   
@@ -9,14 +9,14 @@
     GID: 121
 
   tasks:
-    - name: Create Linux Group
+    - name: Create MySQL Shell Group
       group:
         name: "{{ USER_NAME }}"
         gid: "{{ GID }}"
         state: present
       become: true
 
-    - name: Create Linux User
+    - name: Create MySQL Shell User
       user:
         name: "{{ USER_NAME }}"
         uid: "{{ UID }}"
