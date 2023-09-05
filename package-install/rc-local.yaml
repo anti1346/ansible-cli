@@ -1,0 +1,31 @@
+---
+- name: 활성화된 rc-local 서비스 설정
+  hosts: all
+  become: yes
+
+  tasks:
+    - name: rc.local 서비스 활성화
+      systemd:
+        name: rc-local
+        enabled: yes
+      become_method: sudo
+      tags:
+        - rc-local
+
+    - name: rc.local 서비스 시작
+      systemd:
+        name: rc-local
+        state: started
+      become_method: sudo
+      tags:
+        - rc-local
+
+    - name: rc.local 스크립트 파일 생성
+      shell: echo -e '#!/bin/bash\n\n# 여기에 스크립트 내용을 작성하세요\n' > /etc/rc.local
+      become_method: sudo
+      tags:
+        - rc-local
+
+
+##### ansible-playbook execute
+# ansible-playbook -i inventory/hosts.ini package-install/rc-local.yaml
