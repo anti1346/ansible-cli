@@ -21,7 +21,13 @@
         - rc-local
 
     - name: rc.local 스크립트 파일 생성
-      shell: echo -e '#!/bin/bash\n\n# 여기에 스크립트 내용을 작성하세요\n' > /etc/rc.local
+      copy:
+        content: |
+          #!/bin/bash
+
+          # 여기에 스크립트 내용을 작성하세요
+        dest: /etc/rc.local
+        mode: '0755'  # 실행 권한을 부여합니다.
       become_method: sudo
       tags:
         - rc-local
