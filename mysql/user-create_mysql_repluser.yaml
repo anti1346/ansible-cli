@@ -1,0 +1,35 @@
+---
+- name: Create MySQL repluser
+  hosts: all
+  become: yes
+
+  vars:
+    mysql_root_password: mysqlrootpw1!  # MySQL 루트 패스워드
+    repluser_password: repluserpassword1!  # repluser 패스워드
+
+  tasks:
+    - name: Ensure MySQL Python library is installed
+      apt:
+        name: python3-mysqldb
+      become_method: sudo
+
+    - name: Create MySQL repluser
+      mysql_user:
+        name: repluser
+        password: "{{ repluser_password }}"
+        priv: "*.*:REPLICATION SLAVE"
+      become_method: sudo
+      when: ansible_distribution == 'Ubuntu'
+
+    - name: Set MySQL root password
+      mysql_user:
+        login_unix_socket: /var/run/mysqld/mysqld.sock
+        name: root
+        password: "{{ mysql_root_password }}"
+      become_method: sudo
+      when: ansible_distribution == 'Ubuntu'
+
+
+
+##### ansible-playbook execute
+# ansible-playbook -i inventory/hosts.ini mysql/user-create_mysql_repluser.yaml --limit localhost

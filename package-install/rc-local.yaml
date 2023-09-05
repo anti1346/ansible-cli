@@ -35,3 +35,6 @@
 
 ##### ansible-playbook execute
 # ansible-playbook -i inventory/hosts.ini package-install/rc-local.yaml
+
+# systemctl restart rc-local
+# systemctl status rc-local
