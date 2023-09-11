@@ -5,7 +5,7 @@
 
   tasks:
     - name: Get a list of all groups
-      shell: cat /etc/group | cut -d: -f1
+      shell: "cat /etc/group | cut -d: -f1"
       register: all_groups
       changed_when: false
       check_mode: no
