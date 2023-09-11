@@ -1,0 +1,32 @@
+---
+- name: Remove Unnecessary Groups
+  hosts: all
+  become: true
+
+  tasks:
+    - name: Get a list of all groups
+      shell: cat /etc/group | cut -d: -f1
+      register: all_groups
+      changed_when: false
+      check_mode: no
+
+    - name: Define unnecessary groups to remove
+      set_fact:
+        unnecessary_groups:
+          - fax
+          - voice
+          - tape
+          - floppy
+          - audio
+
+    - name: Remove unnecessary groups
+      group:
+        name: "{{ item }}"
+        state: absent
+      with_items: "{{ unnecessary_groups }}"
+      when: item in all_groups.stdout_lines
+
+
+
+##### ansible-playbook execute
+# ansible-playbook -i inventory/hosts.ini isms-p/delete-groups_default.yaml --limit localhost
