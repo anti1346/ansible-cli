@@ -35,5 +35,5 @@
  
  
 ##### ansible-playbook execute
-# ansible-playbook -i inventory/hosts.ini package-install/nginx_install.yml --limit localhost
+# ansible-playbook -i inventory/hosts.ini package-install/nginx_install.yaml --limit localhost
  
