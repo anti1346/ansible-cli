@@ -11,7 +11,7 @@
   - name: Add Nginx official repository
     apt_repository:
       repo: "deb http://nginx.org/packages/ubuntu $(lsb_release -cs) nginx"
-       state: present
+      state: present
  
   - name: Update package cache
     apt:
