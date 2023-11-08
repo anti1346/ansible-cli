@@ -1,0 +1,33 @@
+---
+- name: Install Nginx
+  hosts: your_target_host
+  become: yes
+  tasks:
+    - name: Add Nginx repository key
+      apt_key:
+        url: https://nginx.org/keys/nginx_signing.key
+
+    - name: Add Nginx official repository
+      apt_repository:
+        repo: "deb http://nginx.org/packages/ubuntu $(lsb_release -cs) nginx"
+        state: present
+
+    - name: Update package cache
+      apt:
+        update_cache: yes
+
+    - name: Install Nginx
+      apt:
+        name: nginx
+        state: present
+
+    - name: Start Nginx service
+      service:
+        name: nginx
+        state: started
+        enabled: yes
+
+
+
+##### ansible-playbook execute
+# ansible-playbook -i inventory/hosts.ini nginx_install.yml --limit localhost
