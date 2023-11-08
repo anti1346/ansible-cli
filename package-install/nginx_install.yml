@@ -1,5 +1,5 @@
 ---
-- name: Install Nginx
+- name: Install Nginx(Version 1.24.0)
   hosts: all
   become: yes
  
