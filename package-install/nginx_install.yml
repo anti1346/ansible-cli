@@ -7,10 +7,14 @@
   - name: Add Nginx repository key
     apt_key:
       url: https://nginx.org/keys/nginx_signing.key
+
+  - name: Generate Nginx repository URL
+    shell: echo "deb https://nginx.org/packages/ubuntu $(lsb_release -cs) nginx"
+    register: nginx_repository
  
   - name: Add Nginx official repository
     apt_repository:
-      repo: "deb http://nginx.org/packages/ubuntu $(lsb_release -cs) nginx"
+      repo: "{{ nginx_repository.stdout_lines[0] }}"
       state: present
  
   - name: Update package cache
