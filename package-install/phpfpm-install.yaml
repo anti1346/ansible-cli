@@ -1,0 +1,31 @@
+---
+- name: Install PHP 8.1 with php-fpm
+  hosts: all
+  become: yes
+
+  tasks:
+    - name: Add ondrej/php repository
+      apt_repository:
+        repo: ppa:ondrej/php
+      when: ansible_distribution == 'Ubuntu' and ansible_distribution_version | version_compare('20.04', '>')
+    
+    - name: Install PHP 8.1 and php-fpm
+      apt:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - php8.1
+        - php8.1-fpm
+        - php8.1-cli
+        - php8.1-mbstring
+        - php8.1-xml
+        - php8.1-intl
+        - php8.1-mysql
+        - php8.1-curl
+      notify: restart php-fpm
+
+  handlers:
+    - name: restart php-fpm
+      service:
+        name: php8.1-fpm
+        state: restarted
