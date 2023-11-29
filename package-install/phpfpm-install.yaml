@@ -19,7 +19,7 @@
         enabled: yes
       when: ansible_distribution == 'CentOS'
 
-    - name: Install PHP 8.1 and php-fpm
+    - name: Install PHP 8.1 and php-fpm (for CentOS)
       package:
         name: "{{ item }}"
         state: present
@@ -49,8 +49,9 @@
         - php8.1-curl
       when: ansible_distribution == 'Ubuntu'
 
-  - name: restart php-fpm
-    service:
-      name: "{{ 'php8.1-fpm' if ansible_distribution == 'Ubuntu' else 'php-fpm' }}"
-      state: restarted
-      enabled: yes
+  handlers:
+    - name: restart php-fpm
+      service:
+        name: "{{ 'php8.1-fpm' if ansible_distribution == 'Ubuntu' else 'php-fpm' }}"
+        state: restarted
+        enabled: yes
