@@ -4,12 +4,37 @@
   become: yes
 
   tasks:
-    - name: Add ondrej/php repository
-      apt_repository:
-        repo: ppa:ondrej/php
-      when: ansible_distribution == 'Ubuntu' and ansible_distribution_version | version_compare('20.04', '>')
-    
+    - name: Install EPEL repository (required for Remi)
+      package:
+        name: epel-release
+        state: present
+      when: ansible_distribution == 'CentOS'
+
+    - name: Add Remi repository
+      yum_repository:
+        name: remi
+        description: Remi's RPM repository for Enterprise Linux
+        baseurl: http://rpms.remirepo.net/enterprise/{{ ansible_distribution_major_version }}/remi/$basearch/
+        gpgkey: http://rpms.remirepo.net/RPM-GPG-KEY-remi
+        enabled: yes
+      when: ansible_distribution == 'CentOS'
+
     - name: Install PHP 8.1 and php-fpm
+      package:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - php
+        - php-fpm
+        - php-cli
+        - php-mbstring
+        - php-xml
+        - php-intl
+        - php-mysqlnd
+        - php-curl
+      when: ansible_distribution == 'CentOS'
+
+    - name: Install PHP 8.1 and php-fpm (for Ubuntu)
       apt:
         name: "{{ item }}"
         state: present
@@ -22,10 +47,10 @@
         - php8.1-intl
         - php8.1-mysql
         - php8.1-curl
-      notify: restart php-fpm
+      when: ansible_distribution == 'Ubuntu'
 
-  handlers:
-    - name: restart php-fpm
-      service:
-        name: php8.1-fpm
-        state: restarted
+  - name: restart php-fpm
+    service:
+      name: "{{ 'php8.1-fpm' if ansible_distribution == 'Ubuntu' else 'php-fpm' }}"
+      state: restarted
+      enabled: yes
