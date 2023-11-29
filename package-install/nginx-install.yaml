@@ -1,36 +1,70 @@
 ---
-- name: Install Nginx(Version 1.24.0)
+---
+- name: Install Nginx (Version 1.24.0)
   hosts: all
   become: yes
- 
-  tasks:
-  - name: Add Nginx repository key
-    apt_key:
-      url: https://nginx.org/keys/nginx_signing.key
 
-  - name: Generate Nginx repository URL
-    shell: echo "deb https://nginx.org/packages/ubuntu $(lsb_release -cs) nginx"
-    register: nginx_repository
+  tasks:
+    - name: Add Nginx repository key
+      ansible.builtin.get_url:
+        url: https://nginx.org/keys/nginx_signing.key
+        dest: /tmp/nginx_signing.key
+
+    - name: Add Nginx repository
+      ansible.builtin.shell:
+        cmd: echo -e "{{ nginx_repo_line }}" > /etc/{{ nginx_repo_path }}
+      vars:
+        nginx_repo_line: "{% if ansible_distribution == 'Ubuntu' %}deb https://nginx.org/packages/ubuntu $(lsb_release -cs) nginx{% elif ansible_distribution == 'CentOS' %}[nginx]\nname=nginx repo\nbaseurl=https://nginx.org/packages/centos/{{ ansible_distribution_major_version }}/\$basearch/\ngpgcheck=1\nenabled=1\ngpgkey=https://nginx.org/keys/nginx_signing.key{% endif %}"
+        nginx_repo_path: "{% if ansible_distribution == 'Ubuntu' %}apt/sources.list.d/nginx.list{% elif ansible_distribution == 'CentOS' %}yum.repos.d/nginx.repo{% endif %}"
+
+    - name: Update package cache
+      ansible.builtin.command:
+        cmd: "{% if ansible_distribution == 'Ubuntu' %}apt-get update -qq{% elif ansible_distribution == 'CentOS' %}yum makecache{% endif %}"
+
+    - name: Install Nginx
+      ansible.builtin.package:
+        name: nginx
+        state: present
+
+    - name: Start Nginx service
+      ansible.builtin.service:
+        name: nginx
+        state: started
+        enabled: yes
+
+
+# - name: Install Nginx(Version 1.24.0)
+#   hosts: all
+#   become: yes
  
-  - name: Add Nginx official repository
-    apt_repository:
-      repo: "{{ nginx_repository.stdout_lines[0] }}"
-      state: present
+#   tasks:
+#   - name: Add Nginx repository key
+#     apt_key:
+#       url: https://nginx.org/keys/nginx_signing.key
+
+#   - name: Generate Nginx repository URL
+#     shell: echo "deb https://nginx.org/packages/ubuntu $(lsb_release -cs) nginx"
+#     register: nginx_repository
  
-  - name: Update package cache
-    apt:
-      update_cache: yes
+#   - name: Add Nginx official repository
+#     apt_repository:
+#       repo: "{{ nginx_repository.stdout_lines[0] }}"
+#       state: present
  
-  - name: Install Nginx
-    apt:
-      name: nginx
-      state: present
+#   - name: Update package cache
+#     apt:
+#       update_cache: yes
  
-  - name: Start Nginx service
-    service:
-      name: nginx
-      state: started
-      enabled: yes
+#   - name: Install Nginx
+#     apt:
+#       name: nginx
+#       state: present
+ 
+#   - name: Start Nginx service
+#     service:
+#       name: nginx
+#       state: started
+#       enabled: yes
  
  
  
