@@ -19,3 +19,7 @@
     - name: 다른 결과 디버깅
       debug:
         var: ls_result.stdout_lines
+
+
+###
+# ansible-playbook -i inventory/hosts.ini ansible_learn/example1.yml --limit localhost
