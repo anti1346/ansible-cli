@@ -1,0 +1,39 @@
+---
+- name: Nginx 설치 및 설정
+  gather_facts: true
+  hosts: all
+  become: true
+
+  vars:
+    users:
+      - user1
+      - user2
+      - user3
+
+  tasks:
+    - name: 사용자 만들기
+      with_items: users
+      user:
+        name: "{{ item }}"
+        state: present
+
+    - name: Nginx 설치
+      package:
+        name: nginx
+        state: present
+      with_items: "{{ ansible_play_hosts_all }}"  # 모든 호스트 반복
+
+    - name: Nginx 서비스 시작
+      service:
+        name: nginx
+        state: started
+      with_items: "{{ ansible_play_hosts_all }}"  # 모든 호스트 반복
+      when: "'CentOS' in ansible_distribution"  # CentOS에서만 실행
+
+    - name: 메시지 표시
+      debug:
+        msg: "Nginx installation and start completed on {{ inventory_hostname }}"
+
+
+###
+# ansible-playbook -i inventory/hosts.ini ansible_learn/example2.yml --limit localhost
