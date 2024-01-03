@@ -26,7 +26,8 @@
 
     - name: 현재 날짜 및 시간 출력
       debug:
-        var: current_date_time.stdout
+        # var: current_date_time.stdout
+        var: current_date_time
 
 ###
 # ansible-playbook -i inventory/hosts.ini ansible_learn/example1.yml --limit localhost
