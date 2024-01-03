@@ -1,0 +1,56 @@
+---
+- name: Nginx 구성 파일 전송
+  hosts: all
+  become: yes
+  # become_method: sudo
+
+  vars:
+    nginx_conf_file: "www.example.com.conf"
+    local_conf_dir: "/tmp/www/original_file"
+    remote_conf_dir: "/etc/nginx/conf.d"
+    backup_conf_dir: "/etc/nginx/backupConf"
+    current_date: "{{ lookup('pipe', 'date +%Y%m%d_%H%M%S') }}"
+
+  tasks:
+    - name: 백업 디렉터리가 없는 경우 백업 디렉터리 만들기
+      ansible.builtin.file:
+        path: "{{ backup_conf_dir }}"
+        state: directory
+
+    - name: Nginx 구성 백업
+      ansible.builtin.shell:
+        cmd: "cp {{ remote_conf_dir }}/{{ nginx_conf_file }} {{ backup_conf_dir }}/{{ nginx_conf_file }}-{{ current_date }}.conf"
+        # cmd: "cp {{ remote_conf_dir }}/{{ nginx_conf_file }} {{ backup_conf_dir }}/{{ nginx_conf_file }}_$(date +%Y%m%d_%H%M%S).conf"
+      tags: nginx_conf_www_backup
+
+    - name: 서버에서 Nginx 구성 파일 복사(파일 가져오기)
+      ansible.builtin.fetch:
+        src: "{{ remote_conf_dir }}/{{ nginx_conf_file }}"
+        dest: "{{ local_conf_dir }}/{{ nginx_conf_file }}-{{ inventory_hostname }}-{{ current_date }}"
+        # dest: "{{ local_conf_dir }}/{{ nginx_conf_file }}_{{ ansible_date_time.iso8601 }}"
+        flat: yes
+      tags: nginx_conf_www_pull
+
+    - name: 서버에 {{ nginx_conf_file }} 배포(파일 내보내기)
+      ansible.builtin.copy:
+        src: "{{ local_conf_dir }}/{{ nginx_conf_file }}"
+        dest: "{{ remote_conf_dir }}/{{ nginx_conf_file }}.ansible"
+        follow: yes
+      tags: nginx_conf_www_deploy
+
+    - name: Nginx 구성 구문 확인
+      ansible.builtin.shell:
+        cmd: "/usr/sbin/nginx -t"
+      register: nginx_syntax_result
+      tags: nginx_conf_syntax
+
+    - name: 디버그로 결과 출력
+      debug:
+        # var: nginx_syntax_result
+        msg: "{{ nginx_syntax_result.stderr_lines }}"
+      tags: nginx_conf_syntax
+
+
+###
+# ansible-playbook -i ./inventory moneySpecial/nginx_conf_virtualhosts.yml --limit server-01
+# ansible-playbook -i ./inventory moneySpecial/nginx_conf_virtualhosts.yml --limit server-01 --tags nginx_conf_www_pull
