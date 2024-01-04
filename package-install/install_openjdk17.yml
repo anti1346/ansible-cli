@@ -1,0 +1,33 @@
+---
+- name: OpenJDK 17 JDK 설치
+  hosts: all
+  become: yes
+
+  tasks:
+    - name: 우분투에 OpenJDK 17 설치하기
+      apt:
+        name: openjdk-17-jdk
+        state: present
+      when: "'ubuntu' in ansible_distribution.lower()"
+
+    - name: CentOS에 OpenJDK 17 설치
+      yum:
+        name: java-17-openjdk-devel
+        state: present
+      when: "'centos' in ansible_distribution.lower()"
+
+    - name: Java(JDK) 설치 확인
+      command: java -version
+      register: java_version_output
+
+    - name: Java(JDK) 버전 표시
+      debug:
+        var: java_version_output.stderr_lines
+
+
+###
+# ansible-inventory -i inventory --graph
+#
+# ansible-playbook -i inventory check-icmp-ping.yaml --limit localhost
+# 
+# ansible-playbook -i inventory package-install/install_openjdk17.yml --limit localhost
