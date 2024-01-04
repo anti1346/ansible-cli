@@ -1,0 +1,46 @@
+---
+- name: "사용자 계정 생성 및 비밀번호 설정하기"
+  hosts: all
+  become: yes
+
+  vars:
+    user_name: test2  # 사용자 계정
+    user_password: "{{ 'test2' | default('your_default_password') }}" # 사용자 패스워드
+    user_id: 2009  # 사용자 ID, 사용자 그룹 ID
+    shell: /bin/bash
+
+  tasks:
+    - name: "{{ user_name }} 사용자 그룹 만들기(Create User Group)"
+      group:
+        name: "{{ user_name }}"
+        gid: "{{ user_id }}"
+      when: "'centos' in ansible_distribution.lower() or 'ubuntu' in ansible_distribution.lower()"
+
+    - name: "{{ user_name }} 사용자 만들기(Create User)"
+      user:
+        name: "{{ user_name }}"
+        uid: "{{ user_id }}"
+        group: "{{ user_name }}"
+        shell: "{{ shell }}"
+        createhome: true
+        state: present
+
+    - name: "{{ user_name }} 사용자 비밀번호 업데이트"
+      user:
+        name: "{{ user_name }}"
+        password: "{{ user_password | password_hash('sha512', 'mysecretsalt') }}"
+        update_password: always
+
+    - name: "{{ user_name }} 계정 생성 확인(Verify Account Creation)"
+      command: id "{{ user_name }}"
+      register: account_id_output
+
+    - name: "{{ user_name }} 계정 ID 정보 표시(Display Account ID Information)"
+      debug:
+        var: account_id_output.stdout_lines
+
+
+### ansible-playbook execute
+# ansible-playbook -i inventory user_command/create_account.yml --limit localhost
+#
+# ansible-playbook -i inventory user_command/create_account.yml -e "user_name=test3 user_password='test3' user_id=2009" --limit localhost
