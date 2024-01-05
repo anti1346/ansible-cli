@@ -1,0 +1,39 @@
+---
+- name: 필수 패키지 설치
+  hosts: all
+  become: yes
+  gather_facts: true
+
+  tasks:
+    - name: 패키지 설치
+      package:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - vim
+        - git
+        - gnupg
+      when: "'CentOS' in ansible_distribution or 'Ubuntu' in ansible_distribution"
+      register: install_packages
+
+    - name: 설치된 패키지 표시
+      debug:
+        var: install_packages.results | map(attribute='item') | list
+      when: install_packages is defined and install_packages.results | rejectattr('changed', 'eq', false) | list | count > 0
+
+    - name: CentOS 7 패키지 설치
+      package:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - systemd-python
+      when: "'CentOS' in ansible_distribution"
+
+
+
+###
+# ansible-inventory -i inventory --graph
+#
+# ansible-playbook -i inventory check-icmp-ping.yml --limit ubuntu22
+# 
+# ansible-playbook -i inventory install-package/install_requirements.yml --limit ubuntu22

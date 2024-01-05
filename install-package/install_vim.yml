@@ -1,0 +1,27 @@
+---
+- name: Install Vim
+  hosts: all
+  become: yes
+  gather_facts: true
+
+  tasks:
+    - name: Install Vim on CentOS
+      package:
+        name: vim
+        state: present
+      when: "'vim' not in ansible_facts.packages and ansible_distribution == 'CentOS'"
+
+    - name: Install Vim on Ubuntu
+      package:
+        name: vim
+        state: present
+      when: "'vim' not in ansible_facts.packages and ansible_distribution == 'Ubuntu'"
+
+
+
+###
+# ansible-inventory -i inventory --graph
+#
+# ansible-playbook -i inventory check-icmp-ping.yml --limit ubuntu22
+# 
+# ansible-playbook -i inventory install-package/install_vim.yml --limit ubuntu22

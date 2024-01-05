@@ -1,0 +1,12 @@
+{# nginx_repo.j2 #}
+
+{% if ansible_distribution == 'Ubuntu' %}
+deb https://nginx.org/packages/ubuntu/ {{ hostvars[inventory_hostname]['ansible_lsb']['codename'] }} nginx
+{% elif ansible_distribution == 'CentOS' %}
+[nginx]
+name=nginx repo
+baseurl=https://nginx.org/packages/centos/{{ ansible_distribution_major_version }}/$basearch/
+gpgcheck=1
+enabled=1
+gpgkey=https://nginx.org/keys/nginx_signing.key
+{% endif %}

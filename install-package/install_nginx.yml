@@ -1,0 +1,106 @@
+---
+- name: Nginx 설치 및 구성
+  hosts: all
+  become: yes
+  gather_facts: true
+
+  tasks:
+    - name: tape 그룹 제거
+      ansible.builtin.group:
+        name: tape
+        state: absent
+      when: ansible_distribution == 'CentOS'
+
+    - name: www-data 사용자 생성
+      ansible.builtin.user:
+        name: www-data
+        comment: "nginx user"
+        shell: /usr/sbin/nologin
+        home: /var/www
+        uid: 33
+        system: yes
+
+    - name: www-data 그룹 생성
+      ansible.builtin.group:
+        name: www-data
+        gid: 33
+        system: yes
+
+    - name: www-data 그룹에 www-data 사용자 추가하기
+      ansible.builtin.user:
+        name: www-data
+        groups: www-data
+
+    - name: Nginx 리포지토리 키 추가하기
+      ansible.builtin.get_url:
+        url: https://nginx.org/keys/nginx_signing.key
+        dest: /tmp/nginx_signing.key
+      when: ansible_distribution == 'Ubuntu'
+
+    - name: Nginx GPG 키 추가
+      ansible.builtin.apt_key:
+        url: https://nginx.org/keys/nginx_signing.key
+        state: present
+      when: ansible_distribution == 'Ubuntu'
+
+    - name: Nginx 리포지토리 생성
+      ansible.builtin.template:
+        src: "{{ playbook_dir }}/sourcedir/nginx/nginx_repo.j2"
+        dest: "{{ nginx_repo_path }}"
+      vars:
+        nginx_repo_path: "{{ '/etc/apt/sources.list.d/nginx.list' if ansible_distribution == 'Ubuntu' else '/etc/yum.repos.d/nginx.repo' }}"
+      when: ansible_distribution == 'Ubuntu' or ansible_distribution == 'CentOS'
+
+    - name: 패키지 캐시 새로 고침
+      ansible.builtin.command:
+        cmd: "{{ 'apt-get update -qq' if ansible_distribution == 'Ubuntu' else 'yum makecache' }}"
+      when: ansible_distribution == 'Ubuntu' or ansible_distribution == 'CentOS'
+
+    - name: Nginx 설치
+      ansible.builtin.package:
+        name: nginx
+        state: present
+      when: ansible_distribution == 'Ubuntu' or ansible_distribution == 'CentOS'
+
+    - name: Nginx 기본 구성 복사(nginx.conf)
+      ansible.builtin.template:
+        src: "{{ playbook_dir }}/sourcedir/nginx/nginx.conf.j2"
+        dest: /etc/nginx/nginx.conf
+
+    - name: Nginx 기본 구성 복사(conf.d/default.conf)
+      ansible.builtin.template:
+        src: "{{ playbook_dir }}/sourcedir/nginx/default.conf.j2"
+        dest: /etc/nginx/conf.d/default.conf
+
+    - name: Nginx 구성 확인
+      ansible.builtin.command:
+        cmd: "nginx -t"
+      register: nginx_check_result
+      changed_when: false
+
+    - name: Debug Nginx Check Result
+      ansible.builtin.debug:
+        var: nginx_check_result.stderr_lines[1]
+
+    - name: 구성이 유효한 경우 Nginx 재시작하기
+      ansible.builtin.service:
+        name: nginx
+        state: started
+      when: "'nginx: configuration file /etc/nginx/nginx.conf test is successful' in nginx_check_result.stderr_lines[1]"
+      notify:
+        - Reload Nginx
+
+  handlers:
+    - name: Reload Nginx
+      ansible.builtin.service:
+        name: nginx
+        state: restarted
+      when: ansible_distribution == 'Ubuntu' or ansible_distribution == 'CentOS'
+
+
+###
+# ansible-inventory -i inventory --graph
+#
+# ansible-playbook -i inventory check-icmp-ping.yml --limit ubuntu22
+# 
+# ansible-playbook -i inventory install-package/install_nginx.yml --limit ubuntu22

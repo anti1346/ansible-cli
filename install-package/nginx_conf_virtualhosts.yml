@@ -52,5 +52,5 @@
 
 
 ###
-# ansible-playbook -i ./inventory moneySpecial/nginx_conf_virtualhosts.yml --limit server-01
-# ansible-playbook -i ./inventory moneySpecial/nginx_conf_virtualhosts.yml --limit server-01 --tags nginx_conf_www_pull
+# ansible-playbook -i ./inventory install-package/nginx_conf_virtualhosts.yml --limit server-01
+# ansible-playbook -i ./inventory install-package/nginx_conf_virtualhosts.yml --limit server-01 --tags nginx_conf_www_pull
