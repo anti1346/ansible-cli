@@ -136,6 +136,7 @@
       template:
         src: "{{ playbook_dir }}/sourcedir/phpfpm/php-fpm.conf.j2"
         dest: "{{ phpfpm_conf_path }}"
+        mode: 0644
       vars:
         phpfpm_conf_path: "{{ '/etc/php/8.1/fpm/php-fpm.conf' if ansible_distribution == 'Ubuntu' else '/etc/php-fpm.conf' }}"
       when: ansible_distribution == 'Ubuntu' or ansible_distribution == 'CentOS'
@@ -159,11 +160,11 @@
         state: restarted
       when: "'CentOS' in ansible_distribution and 'successful' in centos_php_fpm_check_result.stdout"
 
-    - name: software-properties-common 설치 (for Ubuntu)
-      apt:
-        name: software-properties-common
-        state: present
-      when: "'Ubuntu' in ansible_distribution"
+    # - name: software-properties-common 설치 (for Ubuntu)
+    #   apt:
+    #     name: software-properties-common
+    #     state: present
+    #   when: "'Ubuntu' in ansible_distribution"
 
     - name: PHP-FPM 구성 구문 확인 (for Ubuntu)
       ansible.builtin.command:
