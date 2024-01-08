@@ -1,0 +1,188 @@
+---
+- name: Remi 리포지토리로 PHP 설치 및 구성하기
+  hosts: all
+  become: yes
+  gather_facts: true
+
+  vars:
+    php_version: 8.1
+
+  tasks:
+    - name: EPEL 리포지토리 및 yum-utils 설치하기 (for CentOS)
+      yum:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - epel-release
+        - yum-utils
+      when: "'CentOS' in ansible_distribution"
+
+    - name: Remi 리포지토리 설치 (for CentOS)
+      yum:
+        name: http://rpms.remirepo.net/enterprise/remi-release-{{ ansible_distribution_major_version }}.rpm
+        state: present
+      when: "'CentOS' in ansible_distribution"
+
+    - name: remi-php54 리포지토리 사용 안 함 (for CentOS)
+      command: "yum-config-manager --disable remi-php54"
+      when: "'CentOS' in ansible_distribution"
+
+    - name: remi-php81 리포지토리 사용 (for CentOS)
+      command: "{{ 'yum-config-manager' if 'CentOS' in ansible_distribution else 'add-apt-repository' }} --enable remi-php81"
+      when: "'CentOS' in ansible_distribution"
+
+    - name: 활성화된 리포지토리 표시
+      command: "yum repolist enabled"
+      when: "'CentOS' in ansible_distribution"
+
+    - name: PHP, PHP-FPM 프로그램 설치 (for CentOS)
+      package:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - php
+        - php-cli
+        - php-common
+        - php-devel
+        - php-pear
+        - php-fpm
+        - php-gd
+        - php-intl
+        - php-mbstring
+        - php-mysql
+        - php-mysqlnd
+        - php-pecl-mcrypt
+        - php-pecl-zip
+        - php-pdo
+        - php-json
+        - php-xml
+        - php-pecl-igbinary
+      when: "'CentOS' in ansible_distribution"
+
+    - name: PHP 확장 프로그램 설치 (for CentOS)
+      package:
+        name: "{{ item }}"
+        state: present
+      loop:        
+        - php-pecl-redis
+        - php-mongodb
+        - php-pecl-mongodb
+        - php-imagick
+        - php-pecl-imagick
+        - php-pecl-rdkafka
+      when: "'CentOS' in ansible_distribution"
+
+    - name: Remi 리포지토리 추가 (for Ubuntu)
+      apt_repository:
+        repo: "ppa:ondrej/php"
+      when: "'Ubuntu' in ansible_distribution"
+
+    - name: PHP, PHP-FPM 프로그램 설치 (for Ubuntu)
+      package:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - php{{ php_version }}
+        - php{{ php_version }}-cli
+        - php{{ php_version }}-common
+        - php{{ php_version }}-fpm
+        - php{{ php_version }}-gd
+        - php{{ php_version }}-intl
+        - php{{ php_version }}-mbstring
+        - php{{ php_version }}-mysql
+        - php{{ php_version }}-readline
+        - php{{ php_version }}-zip
+        - php{{ php_version }}-xml
+      when: "'Ubuntu' in ansible_distribution"
+
+    - name: PHP 확장 프로그램 설치 (for Ubuntu)
+      package:
+        name: "{{ item }}"
+        state: present
+      loop:        
+        - php{{ php_version }}-redis
+        - php{{ php_version }}-mongodb
+        - php{{ php_version }}-imagick
+        - php{{ php_version }}-rdkafka
+      when: "'Ubuntu' in ansible_distribution"
+
+    - name: Create Directories
+      file:
+        path: "{{ item }}"
+        state: directory
+        mode: 0755
+      loop:
+        - /var/log/php-fpm
+        - /var/lib/php/sessions
+        - /var/lib/php/wsdlcache
+
+    - name: Set OS-specific PHP paths
+      set_fact:
+        php_conf_dest: "{% if ansible_os_family == 'RedHat' %}/etc/php.ini{% else %}/etc/php/{{ php_version }}/fpm/php.ini{% endif %}"
+        php_fpm_conf_dest: "{% if ansible_os_family == 'RedHat' %}/etc/php-fpm.conf{% else %}/etc/php/{{ php_version }}/fpm/php-fpm.conf{% endif %}"
+        www_conf_dest: "{% if ansible_os_family == 'RedHat' %}/etc/php-fpm.d/www.conf{% else %}/etc/php/{{ php_version }}/fpm/pool.d/www.conf{% endif %}"
+
+    - name: php.ini 복사
+      copy:
+        src: "{{ playbook_dir }}/sourcedir/phpfpm/php.ini"
+        dest: "{{ php_conf_dest }}"
+        mode: 0644
+
+    - name: php-fpm.conf.j2 복사
+      template:
+        src: "{{ playbook_dir }}/sourcedir/phpfpm/php-fpm.conf.j2"
+        dest: "{{ php_fpm_conf_dest }}"
+        mode: 0644
+
+    - name: www.conf.j2 복사
+      template:
+        src: "{{ playbook_dir }}/sourcedir/phpfpm/www.conf.j2"
+        dest: "{{ www_conf_dest }}"
+        mode: 0644
+
+    - name: PHP-FPM 구성 구문 확인 (for CentOS)
+      ansible.builtin.command:
+        cmd: "php-fpm -t"
+      register: centos_php_fpm_check_result
+      changed_when: false
+      when: "'CentOS' in ansible_distribution"
+
+    - name: 구성이 유효한 경우 PHP-FPM을 재시작 (for CentOS)
+      ansible.builtin.systemd:
+        name: php-fpm
+        state: restarted
+      when: "'CentOS' in ansible_distribution and 'successful' in centos_php_fpm_check_result.stdout"
+
+    - name: software-properties-common 설치 (for Ubuntu)
+      apt:
+        name: software-properties-common
+        state: present
+      when: "'Ubuntu' in ansible_distribution"
+
+    - name: PHP-FPM 구성 구문 확인 (for Ubuntu)
+      ansible.builtin.command:
+        cmd: "php-fpm8.1 -t"
+      register: ubuntu_php_fpm_check_result
+      changed_when: false
+      when: "'Ubuntu' in ansible_distribution"
+
+    - name: 구성이 유효한 경우 PHP-FPM을 다시 시작 (for Ubuntu)
+      ansible.builtin.service:
+        name: php8.1-fpm
+        state: restarted
+      when: "'Ubuntu' in ansible_distribution and 'successful' in ubuntu_php_fpm_check_result.stdout"
+
+    - name: PHP-FPM 서비스 활성화 및 시작
+      systemd:
+        name: php-fpm
+        state: started
+        enabled: yes
+
+
+###
+# ansible-inventory -i inventory --graph
+#
+# ansible-playbook -i inventory check-icmp-ping.yml --limit ubuntu22
+# 
+# ansible-playbook -i inventory install-package/install_phpfpm.yml --limit centos7
+
