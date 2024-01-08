@@ -129,10 +129,16 @@
         mode: 0644
 
     - name: php-fpm.conf.j2 복사
+      # template:
+      #   src: "{{ playbook_dir }}/sourcedir/phpfpm/php-fpm.conf.j2"
+      #   dest: "{{ php_fpm_conf_dest }}"
+      #   mode: 0644
       template:
         src: "{{ playbook_dir }}/sourcedir/phpfpm/php-fpm.conf.j2"
-        dest: "{{ php_fpm_conf_dest }}"
-        mode: 0644
+        dest: "{{ phpfpm_conf_path }}"
+      vars:
+        phpfpm_conf_path: "{{ '/etc/php/8.1/fpm/php-fpm.conf' if ansible_distribution == 'Ubuntu' else '/etc/php-fpm.conf' }}"
+      when: ansible_distribution == 'Ubuntu' or ansible_distribution == 'CentOS'
 
     - name: www.conf.j2 복사
       template:
