@@ -92,9 +92,10 @@
 
   handlers:
     - name: Reload Nginx
-      ansible.builtin.service:
+      ansible.builtin.systemd:
         name: nginx
         state: restarted
+        enabled: yes
       when: ansible_distribution == 'Ubuntu' or ansible_distribution == 'CentOS'
 
 
