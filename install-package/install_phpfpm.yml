@@ -182,11 +182,11 @@
         enabled: yes
       when: "'Ubuntu' in ansible_distribution and 'successful' in ubuntu_php_fpm_check_result.stdout"
 
-    # - name: PHP-FPM 서비스 활성화 및 시작
-    #   systemd:
-    #     name: php-fpm
-    #     state: started
-    #     enabled: yes
+    - name: PHP-FPM 서비스 활성화 및 시작
+      systemd:
+        name: php-fpm
+        state: started
+        enabled: yes
 
 
 ###
