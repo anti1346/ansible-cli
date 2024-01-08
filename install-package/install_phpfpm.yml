@@ -162,6 +162,13 @@
         enabled: yes
       when: "'CentOS' in ansible_distribution and 'successful' in centos_php_fpm_check_result.stdout"
 
+    - name: PHP-FPM 서비스 활성화 및 시작 (for CentOS)
+      systemd:
+        name: php-fpm
+        state: started
+        enabled: yes
+      when: "'CentOS' in ansible_distribution"
+
     # - name: software-properties-common 설치 (for Ubuntu)
     #   apt:
     #     name: software-properties-common
@@ -182,11 +189,12 @@
         enabled: yes
       when: "'Ubuntu' in ansible_distribution and 'successful' in ubuntu_php_fpm_check_result.stdout"
 
-    - name: PHP-FPM 서비스 활성화 및 시작
+    - name: PHP-FPM 서비스 활성화 및 시작 (for Ubuntu)
       systemd:
-        name: php-fpm
+        name: php8.1-fpm
         state: started
         enabled: yes
+      when: "'Ubuntu' in ansible_distribution"
 
 
 ###
