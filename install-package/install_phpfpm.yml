@@ -112,9 +112,8 @@
         state: directory
         mode: 0755
       loop:
+        - /var/run/php-fpm
         - /var/log/php-fpm
-        - /var/lib/php/sessions
-        - /var/lib/php/wsdlcache
 
     - name: php.ini 복사
       copy:
