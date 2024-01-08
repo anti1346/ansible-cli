@@ -116,17 +116,14 @@
         - /var/lib/php/sessions
         - /var/lib/php/wsdlcache
 
-    - name: Set OS-specific PHP paths
-      set_fact:
-        php_conf_dest: "{% if ansible_os_family == 'RedHat' %}/etc/php.ini{% else %}/etc/php/{{ php_version }}/fpm/php.ini{% endif %}"
-        php_fpm_conf_dest: "{% if ansible_os_family == 'RedHat' %}/etc/php-fpm.conf{% else %}/etc/php/{{ php_version }}/fpm/php-fpm.conf{% endif %}"
-        www_conf_dest: "{% if ansible_os_family == 'RedHat' %}/etc/php-fpm.d/www.conf{% else %}/etc/php/{{ php_version }}/fpm/pool.d/www.conf{% endif %}"
-
     - name: php.ini 복사
       copy:
         src: "{{ playbook_dir }}/sourcedir/phpfpm/php.ini.j2"
-        dest: "{{ php_conf_dest }}"
+        dest: "{{ php_conf_path }}"
         mode: 0644
+      vars:
+        php_conf_path: "{% if ansible_distribution == 'CentOS' %}/etc/php.ini{% else %}/etc/php/{{ php_version }}/fpm/php.ini{% endif %}"
+      when: ansible_distribution == 'Ubuntu' or ansible_distribution == 'CentOS'
 
     - name: php-fpm.conf.j2 복사
       # template:
@@ -138,14 +135,19 @@
         dest: "{{ phpfpm_conf_path }}"
         mode: 0644
       vars:
-        phpfpm_conf_path: "{{ '/etc/php/8.1/fpm/php-fpm.conf' if ansible_distribution == 'Ubuntu' else '/etc/php-fpm.conf' }}"
+        # phpfpm_conf_path: "{{ '/etc/php/8.1/fpm/php-fpm.conf' if ansible_distribution == 'Ubuntu' else '/etc/php-fpm.conf' }}"
+        phpfpm_conf_path: "{% if ansible_distribution == 'CentOS' %}/etc/php-fpm.conf{% else %}/etc/php/{{ php_version }}/fpm/php-fpm.conf{% endif %}"
       when: ansible_distribution == 'Ubuntu' or ansible_distribution == 'CentOS'
 
     - name: www.conf.j2 복사
       template:
         src: "{{ playbook_dir }}/sourcedir/phpfpm/www.conf.j2"
-        dest: "{{ www_conf_dest }}"
+        dest: "{{ www_conf_path }}"
         mode: 0644
+      vars:
+        # www_conf_path: "{{ '/etc/php/8.1/fpm/pool.d/www.conf' if ansible_distribution == 'Ubuntu' else '/etc/php-fpm.d/www.conf' }}"
+        www_conf_path: "{% if ansible_distribution == 'CentOS' %}/etc/php-fpm.d/www.conf{% else %}/etc/php/{{ php_version }}/fpm/pool.d/www.conf{% endif %}"
+      when: ansible_distribution == 'Ubuntu' or ansible_distribution == 'CentOS'
 
     - name: PHP-FPM 구성 구문 확인 (for CentOS)
       ansible.builtin.command:
