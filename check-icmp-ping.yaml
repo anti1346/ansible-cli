@@ -19,9 +19,6 @@
         msg: "Host {{ inventory_hostname }} is {{ 'reachable' if available else 'unreachable' }}"
 
 
-
-
-
 ##### ansible
 # ansible -i ./inventory localhost -m shell -a "ping -c3 -W3 8.8.8.8"
 
