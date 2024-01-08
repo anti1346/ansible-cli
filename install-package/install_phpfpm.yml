@@ -124,7 +124,7 @@
 
     - name: php.ini 복사
       copy:
-        src: "{{ playbook_dir }}/sourcedir/phpfpm/php.ini"
+        src: "{{ playbook_dir }}/sourcedir/phpfpm/php.ini.j2"
         dest: "{{ php_conf_dest }}"
         mode: 0644
 
