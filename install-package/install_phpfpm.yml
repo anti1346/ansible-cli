@@ -177,7 +177,7 @@
       when: "'Ubuntu' in ansible_distribution"
 
     - name: 구성이 유효한 경우 PHP-FPM을 다시 시작 (for Ubuntu)
-      ansible.builtin.service:
+      ansible.builtin.systemd:
         name: php8.1-fpm
         state: restarted
         enabled: yes
