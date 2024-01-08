@@ -185,3 +185,4 @@
 # ansible-playbook -i inventory check-icmp-ping.yml --limit ubuntu22
 # 
 # ansible-playbook -i inventory install-package/install_phpfpm.yml --limit centos7
+
