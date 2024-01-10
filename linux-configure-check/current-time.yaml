@@ -13,5 +13,5 @@
         var: current_time.stdout
 
 
-##### ansible-playbook execute
-# ansible-playbook -i inventory/hosts.ini current-time.yaml
+### ansible-playbook execute
+# ansible-playbook -i inventory/hosts.ini linux-configure-check/current-time.yaml --limit localhost,centos7,ubuntu2204
