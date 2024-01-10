@@ -22,15 +22,15 @@
     #     var: ansible_distribution_release
     #   when: ansible_distribution == "CentOS" or ansible_distribution == "Ubuntu"
 
-    - name: raw 버전 정보 표시
-      ansible.builtin.debug:
-        var: ansible_distribution_version
-      when: ansible_distribution == "CentOS" or ansible_distribution == "Ubuntu"
+    # - name: raw 버전 정보 표시
+    #   ansible.builtin.debug:
+    #     var: ansible_distribution_version
+    #   when: ansible_distribution == "CentOS" or ansible_distribution == "Ubuntu"
 
-    - name: 알 수 없는 배포판 처리
-      ansible.builtin.debug:
-        msg: "Unknown distribution"
-      when: ansible_distribution not in ["CentOS", "Ubuntu"]
+    # - name: 알 수 없는 배포판 처리
+    #   ansible.builtin.debug:
+    #     msg: "Unknown distribution"
+    #   when: ansible_distribution not in ["CentOS", "Ubuntu"]
 
 
 ### ansible-playbook execute
