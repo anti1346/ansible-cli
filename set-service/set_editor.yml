@@ -17,7 +17,8 @@
       register: editor_result
 
     - debug:
-        var: editor_result.stdout_lines
+        # var: editor_result.stdout_lines
+        msg: "{{ editor_result.stdout_lines[2] }}"
       when: ansible_distribution == 'Ubuntu'
 
 
