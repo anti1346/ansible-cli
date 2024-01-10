@@ -30,7 +30,7 @@
         # var: timezone_result.stdout_lines[3]
         # msg: "{{ timezone_result.stdout_lines[3] }}"
         filter:
-          value: "{{ timezone_result.stdout_lines | where(line='Time zone: Asia/Seoul (KST, +0900)') | first }}"
+          value: "{{ timezone_result.stdout_lines | where(line='Time zone') | first }}"
       tags:
         - timezone_check
 
