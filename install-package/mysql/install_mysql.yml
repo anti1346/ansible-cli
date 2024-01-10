@@ -60,7 +60,7 @@
 
     - name: my.cnf 파일 만들기
       template:
-        src: "{{ playbook_dir }}/sourcedir/mysql/my.cnf.j2"
+        src: "{{ playbook_dir }}/../sourcedir/mysql/my.cnf.j2"
         dest: /etc/my.cnf
       tags:
         - mysql_install
