@@ -3,7 +3,7 @@
   become: yes
 
   tasks:
-    - name: rc.local 스크립트 파일 생성 (Ubuntu)
+    - name: rc.local 스크립트 파일 생성
       copy:
         content: |
           #!/bin/bash
@@ -19,14 +19,28 @@
       blockinfile:
         path: /usr/lib/systemd/system/rc-local.service
         block: |
+
           [Install]
           WantedBy=multi-user.target
       when: ansible_distribution == 'CentOS'
+      tags:
+        - rc-local_service
 
     - name: Reload systemd
       systemd:
         daemon_reload: yes
       when: ansible_distribution == 'CentOS'
+      tags:
+        - systemd_reload
+
+    - name: /etc/rc.d/rc.local 실행 권한 부여
+      file: 
+        path: /etc/rc.d/rc.local
+        state: file
+        mode: '0755'
+      when: ansible_distribution == 'CentOS'
+      tags:
+        - rc-local_execute
 
     - name: rc.local 시작 및 서비스 활성화
       systemd:
@@ -36,6 +50,19 @@
       when: ansible_distribution in ['Ubuntu', 'CentOS']
       tags:
         - rc-local_start
+
+    - name: rc-local 상태 확인
+      command: systemctl status rc-local
+      register: rc_local_status
+      tags:
+        - rc-local_status
+
+    - name: Debug rc-local 상태
+      debug:
+        var: rc_local_status.stdout_lines
+      tags:
+        - rc-local_status
+
 
 ### ansible-playbook execute
 # ansible-playbook -i inventory/hosts.ini linux-setup/set_rc-local.yml --limit centos7,ubuntu2204
