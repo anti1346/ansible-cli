@@ -17,7 +17,7 @@
         dest: "/tmp/{{ mysql_archive }}"
       when: download_mysql_tarball
       tags:
-        - package_deploy
+        - package_deploy package_deploy_download
 
     - name: MySQL 홈페이지에서 MySQL 아키이브 다운로드
       shell: "set -e && wget -q https://dev.mysql.com/get/Downloads/MySQL-8.0/{{ mysql_archive }} -O /tmp/{{ mysql_archive }}"
@@ -30,7 +30,7 @@
         path: "{{ mysql_install_dir }}"
         state: directory
       tags:
-        - package_deploy
+        - package_deploy package_deploy_download
 
     - name: MySQL 아카이브 파일 압축 해제
       unarchive:
