@@ -1,0 +1,32 @@
+---
+- name: libncurses 패키지 설치
+  hosts: all
+  become: true
+
+  tasks:
+    - name: apt 캐시 업데이트 (for Ubuntu)
+      apt:
+        update_cache: yes
+      when: ansible_distribution == 'Ubuntu'
+      tags:
+        - update_cache
+
+    - name: libncurses5 패키지 설치 (for Ubuntu)
+      apt:
+        name: libncurses5
+        state: present
+      when: ansible_distribution == 'Ubuntu'
+      tags:
+        - install_libncurses5
+
+    - name: libncurses 패키지 설치 (for CentOS)
+      yum:
+        name: libncurses
+        state: present
+      when: ansible_distribution == 'CentOS'
+      tags:
+        - install_libncurses
+
+
+##### ansible-playbook execute
+# ansible-playbook -i inventory/hosts.ini install-package/mysql/install_libncurses.yml --limit localhost
