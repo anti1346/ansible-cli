@@ -21,12 +21,7 @@
         - package_deploy
 
     - name: MySQL 홈페이지에서 MySQL 아키이브 다운로드
-      get_url:
-        url: "https://dev.mysql.com/get/Downloads/MySQL-8.0/{{ mysql_archive }}"
-        dest: "/tmp/{{ mysql_archive }}"
-        mode: '0644'
-        headers:
-          User-Agent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
+      shell: "wget https://dev.mysql.com/get/Downloads/MySQL-8.0/{{ mysql_archive }} -O /tmp/{{ mysql_archive }}"
       when: not download_mysql_tarball
       tags:
         - package_deploy
