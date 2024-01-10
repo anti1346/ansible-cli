@@ -27,7 +27,8 @@
 
     - debug:
         # var: timezone_result.stdout
-        var: timezone_result.stdout_lines[3]
+        # var: timezone_result.stdout_lines[3]
+        msg: "{{ timezone_result.stdout_lines[3] }}"
       tags:
         - timezone_check
 
