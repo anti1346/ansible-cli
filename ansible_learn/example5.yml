@@ -1,7 +1,9 @@
 ---
 - name: 예외 처리 테스트
-  hosts: localhost
+  hosts: all
+  become: true
   gather_facts: false
+
   tasks:
     - name: 블록 내에서 오류 발생
       block:
