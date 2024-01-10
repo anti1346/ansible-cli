@@ -11,9 +11,7 @@
 
     - name: Display current time
       debug:
-        # var: current_time.stdout
-        var: current_time.output
-
+        var: current_time.stdout
 
 
 ### ansible-playbook execute
