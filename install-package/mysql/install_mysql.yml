@@ -5,7 +5,7 @@
   # gather_facts: false
 
   vars:
-    download_mysql_tarball: true
+    download_mysql_tarball: false
     mysql_archive: "mysql-8.0.34-linux-glibc2.28-x86_64.tar.gz"
     mysql_extract_dir: "/usr/local/mysql"
     mysql_install_dir: "/usr/local/mysql"
