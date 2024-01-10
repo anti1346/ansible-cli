@@ -4,12 +4,6 @@
   become: true
 
   tasks:
-    - name: Install vim.basic package
-      ansible.builtin.package:
-        name: vim
-        state: present
-      when: ansible_distribution == 'Ubuntu'
-
     - name: Set editor using update-alternatives
       ansible.builtin.command:
         cmd: update-alternatives --set editor /usr/bin/vim.basic
