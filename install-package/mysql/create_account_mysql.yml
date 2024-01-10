@@ -1,5 +1,5 @@
 ---
-- name: Create Shell User (mysql)
+- name: mysql 셸 사용자 만들기
   hosts: all
   become: true
   
@@ -21,15 +21,15 @@
         uid: "{{ UID }}"
         group: "{{ USER_NAME }}"
         shell: /bin/false
-        create_home: yes
         home: "/home/{{ USER_NAME }}"
         state: present
+        comment: "{{ USER_NAME }}"
+      register: user_creation_result
 
-    - name: Set MySQL User Comment
-      user:
-        name: "{{ USER_NAME }}"
-        comment: "MySQL User"
+    - name: Display Created User Information
+      debug:
+        var: user_creation_result.user
 
 
 ##### ansible-playbook execute
-# ansible-playbook -i inventory/hosts.ini mysql/user-create_mysql.yaml --limit localhost
+# ansible-playbook -i inventory/hosts.ini install-package/mysql/create_account_mysql --limit centos7,ubuntu2204
