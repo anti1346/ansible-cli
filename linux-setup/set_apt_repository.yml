@@ -1,0 +1,35 @@
+---
+- name: Ubuntu 미러 및 백업 sources.list 업데이트하기
+  hosts: all
+  become: true
+
+  tasks:
+    - name: Backup sources.list file
+      ansible.builtin.copy:
+        src: /etc/apt/sources.list
+        dest: "/etc/apt/sources.list.{{ ansible_date_time.date }}"
+        remote_src: yes
+      register: backup_result
+      when: ansible_distribution == 'Ubuntu'
+
+    - name: Replace Ubuntu mirror URL in sources.list
+      ansible.builtin.replace:
+        path: /etc/apt/sources.list
+        regexp: 'http://archive.ubuntu.com'
+        replace: 'https://mirror.kakao.com'
+      when: ansible_distribution == 'Ubuntu'
+
+    - name: Update package cache
+      ansible.builtin.apt:
+        update_cache: yes
+      when: ansible_distribution == 'Ubuntu'
+
+    - name: Display backup result
+      ansible.builtin.debug:
+        var: backup_result
+      when: ansible_distribution == 'Ubuntu'
+
+
+### ansible-playbook execute
+#
+# ansible-playbook -i inventory/hosts.ini linux-setup/set_apt_repository.yml --limit centos7,ubuntu2204
