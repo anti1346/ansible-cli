@@ -8,6 +8,10 @@
     - name: Set editor using update-alternatives
       ansible.builtin.command:
         cmd: sudo update-alternatives --set editor /usr/bin/vim.basic
+      register: editor_result
+
+    - debug:
+      var: editor_result
 
 
 ### ansible-playbook execute
