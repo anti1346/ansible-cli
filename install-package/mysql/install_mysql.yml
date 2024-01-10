@@ -36,7 +36,7 @@
         - "{{ mysql_install_dir }}"
         - "{{ mysql_data_dir }}"
       tags:
-        mysql_directory_create
+        mysql_install
 
     - name: MySQL 아카이브 압축 해제
       unarchive:
@@ -45,7 +45,7 @@
         remote_src: yes
         extra_opts: "--strip-components=1"
       tags:
-        - mysql_unarchive
+        - mysql_install
 
     - name: MySQL 설치 디렉터리의 소유권 설정
       file:
@@ -58,18 +58,18 @@
         - "{{ mysql_install_dir }}"
         - "{{ mysql_data_dir }}"
       tags:
-        - mysql_directory_create
+        - mysql_install
 
     - name: my.cnf 파일 만들기
       template:
         src: "{{ playbook_dir }}/sourcedir/mysql/my.cnf.j2"
         dest: /etc/my.cnf
       tags:
-        - mysql_cnf_create
+        - mysql_install
 
 
 ##### ansible-playbook execute
-# ansible-playbook -i inventory/hosts.ini mysql/install-mysql.yaml --limit localhost
+# ansible-playbook -i inventory/hosts.ini install-package/mysql/install_mysql.yml --limit centos7,ubuntu2204
 #
-# ansible-playbook -i inventory/hosts.ini mysql/install-mysql.yaml --limit localhost --tags package-deploy 
-# ansible-playbook -i inventory/hosts.ini mysql/install-mysql.yaml --limit localhost --tags unarchive,deploy
+# ansible-playbook -i inventory/hosts.ini install-package/mysql/install_mysql.yml --limit centos7,ubuntu2204 --tags package_deploy 
+# ansible-playbook -i inventory/hosts.ini install-package/mysql/install_mysql.yml --limit centos7,ubuntu2204 --tags mysql_install
