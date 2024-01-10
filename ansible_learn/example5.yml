@@ -1,0 +1,21 @@
+---
+- name: 예외 처리 테스트
+  hosts: localhost
+  gather_facts: false
+  tasks:
+    - name: 블록 내에서 오류 발생
+      block:
+        - name: 실패 유도 작업
+          command: nonexistent_command
+      rescue:
+        - name: 오류 발생 시 실행되는 작업
+          debug:
+            msg: "오류가 발생했습니다."
+      always:
+        - name: 항상 실행되는 작업
+          debug:
+            msg: "이 작업은 항상 실행됩니다."
+
+
+### ansible-playbook execute
+# ansible-playbook -i inventory/hosts.ini ansible_learn/example5.yml --limit localhost,centos7,ubuntu2204
