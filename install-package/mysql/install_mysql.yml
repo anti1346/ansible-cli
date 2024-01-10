@@ -25,7 +25,7 @@
       tags:
         - package_deploy
 
-    - name: "{{ mysql_install_dir }}" 디렉터리 생성 
+    - name: "{{ mysql_install_dir }} 디렉터리 생성"
       file:
         path: "{{ mysql_install_dir }}"
         state: directory
@@ -41,7 +41,7 @@
       tags:
         - package_deploy
 
-    - name: "{{ mysql_data_dir }}" 디렉터리 생성
+    - name: "{{ mysql_data_dir }} 디렉터리 생성"
       file:
         path: "{{ mysql_data_dir }}"
         state: directory
