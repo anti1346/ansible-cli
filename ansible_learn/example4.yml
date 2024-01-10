@@ -6,7 +6,7 @@
 
   tasks:
     - name: 실패 유도 작업
-      command: /path/to/nonexistent_command
+      command: ls
       register: result
       ignore_errors: true
 
