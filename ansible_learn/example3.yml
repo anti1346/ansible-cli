@@ -5,7 +5,7 @@
   gather_facts: false
 
   tasks:
-    - name: 외부 블록
+    - name: Outer Block
       block:
         - name: Loop Block
           block:
@@ -19,18 +19,18 @@
           always:
             - name: Always inside Loop
               debug:
-                msg: "이것은 항상 루프 내부에서 실행됩니다."
-        - name: 외부 블록 안의 다른 작업
+                msg: "This always runs inside the loop"
+        - name: Another Task inside Outer Block
           debug:
-            msg: "이것은 루프 외부에서 실행됩니다."
+            msg: "This runs outside the loop"
       rescue:
         - name: Rescue Block
           debug:
-            msg: "이것은 구조에서 실행됩니다(rescue)"
+            msg: "This runs on rescue"
       always:
         - name: Always Block
           debug:
-            msg: "이것은 항상 실행됩니다."
+            msg: "This always runs"
 
 
 ### ansible-playbook execute
