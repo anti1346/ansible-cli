@@ -7,7 +7,6 @@
   vars:
     download_mysql_tarball: false
     mysql_archive: "mysql-8.0.34-linux-glibc2.28-x86_64.tar.gz"
-    mysql_extract_dir: "/usr/local/mysql"
     mysql_install_dir: "/usr/local/mysql"
     mysql_data_dir: "/usr/local/mysql/data"
 
@@ -21,7 +20,7 @@
         - package_deploy
 
     - name: MySQL 홈페이지에서 MySQL 아키이브 다운로드
-      shell: "wget https://dev.mysql.com/get/Downloads/MySQL-8.0/{{ mysql_archive }} -O /tmp/{{ mysql_archive }}"
+      shell: "wget https://dev.mysql.com/get/Downloads/MySQL-8.0/{{ mysql_archive }} -O /tmp/{{ mysql_archive }} > /dev/null 2>&1"
       when: not download_mysql_tarball
       tags:
         - package_deploy
@@ -39,7 +38,7 @@
     - name: MySQL 아카이브 파일 압축 해제
       unarchive:
         src: "/tmp/{{ mysql_archive }}"
-        dest: "{{ mysql_extract_dir }}"
+        dest: "{{ mysql_install_dir }}"
         remote_src: yes
         extra_opts: "--strip-components=1"
       tags:
@@ -58,6 +57,16 @@
       tags:
         - mysql_install
 
+    - name: {{ mysql_install_dir }} 디렉터리의 소유권 설정
+      file:
+        path: "{{ mysql_install_dir }}"
+        state: directory
+        recurse: yes
+        owner: mysql
+        group: mysql
+      tags:
+        - mysql_install
+
     - name: my.cnf 파일 만들기
       template:
         src: "{{ playbook_dir }}/../sourcedir/mysql/my.cnf.j2"
@@ -65,9 +74,17 @@
       tags:
         - mysql_install
 
+    - name: Remove MySQL 아카이브 파일
+      file:
+        path: "/tmp/{{ mysql_archive }}"
+        state: absent
+      tags:
+        - package_deploy_remove
+
 
 ##### ansible-playbook execute
 # ansible-playbook -i inventory/hosts.ini install-package/mysql/install_mysql.yml --limit centos7,ubuntu2204
 #
 # ansible-playbook -i inventory/hosts.ini install-package/mysql/install_mysql.yml --limit centos7,ubuntu2204 --tags package_deploy 
 # ansible-playbook -i inventory/hosts.ini install-package/mysql/install_mysql.yml --limit centos7,ubuntu2204 --tags mysql_install
+# ansible-playbook -i inventory/hosts.ini install-package/mysql/install_mysql.yml --limit centos7,ubuntu2204 --tags package_deploy_remove
