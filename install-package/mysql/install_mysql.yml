@@ -1,8 +1,8 @@
 ---
-- name: Deploy and extract MySQL archive
+- name: MySQL 압축 파일 배포 및 MySQL 설치
   hosts: all
   become: true
-  gather_facts: false
+  # gather_facts: false
 
   vars:
     download_mysql_tarball: false
@@ -12,21 +12,22 @@
     mysql_data_dir: "/usr/local/mysql/data"
 
   tasks:
-    - name: MySQL 아카이브를 원격 호스트에 복사하기
+    - name: MySQL 아카이브 복사 또는 다운로드
       copy:
         src: "{{ playbook_dir }}/sourcedir/mysql/{{ mysql_archive }}"
         dest: "/tmp/{{ mysql_archive }}"
+      when: not download_mysql_tarball
       tags:
-        - package_deploy
+        - package-deploy
 
-    - name: Download MySQL tarball
+    - name: MySQL 타볼 다운로드
       get_url:
         url: "https://dev.mysql.com/get/Downloads/MySQL-8.0/{{ mysql_archive }}"
         dest: "/tmp/{{ mysql_archive }}"
         mode: '0644'
-      tags:
-        - package_deploy
       when: download_mysql_tarball
+      tags:
+        - package-deploy
 
     - name: MySQL 설치 디렉터리가 있는지 확인
       file:
@@ -36,9 +37,9 @@
         - "{{ mysql_install_dir }}"
         - "{{ mysql_data_dir }}"
       tags:
-        mysql_install
+        - mysql_install
 
-    - name: MySQL 아카이브 압축 해제
+    - name: MySQL 아카이브 파일 압축 해제
       unarchive:
         src: "/tmp/{{ mysql_archive }}"
         dest: "{{ mysql_extract_dir }}"
