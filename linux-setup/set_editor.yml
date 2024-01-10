@@ -29,6 +29,6 @@
 
 
 ### ansible-playbook execute
-# ansible-playbook -i inventory/hosts.ini set-service/set_editor.yml --limit centos7,ubuntu2204 --tags=get_editor
+# ansible-playbook -i inventory/hosts.ini linux-setup/set_editor.yml --limit centos7,ubuntu2204 --tags=get_editor
 #
-# ansible-playbook -i inventory/hosts.ini set-service/set_editor.yml --limit centos7,ubuntu2204
+# ansible-playbook -i inventory/hosts.ini linux-setup/set_editor.yml --limit centos7,ubuntu2204

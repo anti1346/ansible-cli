@@ -34,7 +34,7 @@
 
 
 ### ansible-playbook execute
-# ansible-playbook -i inventory/hosts.ini set-service/set_timezone.yml --limit centos7,ubuntu2204 --tags=timezone_setup
-# ansible-playbook -i inventory/hosts.ini set-service/set_timezone.yml --limit centos7,ubuntu2204 --tags=timezone_check
+# ansible-playbook -i inventory/hosts.ini linux-setup/set_timezone.yml --limit centos7,ubuntu2204 --tags=timezone_setup
+# ansible-playbook -i inventory/hosts.ini linux-setup/set_timezone.yml --limit centos7,ubuntu2204 --tags=timezone_check
 #
-# ansible-playbook -i inventory/hosts.ini set-service/set_timezone.yml --limit centos7,ubuntu2204
+# ansible-playbook -i inventory/hosts.ini linux-setup/set_timezone.yml --limit centos7,ubuntu2204
