@@ -8,6 +8,8 @@
       ansible.builtin.command:
         cmd: update-alternatives --set editor /usr/bin/vim.basic
       when: ansible_distribution == 'Ubuntu'
+      tags:
+        - set_editor
 
     - name: Get current editor using update-alternatives
       ansible.builtin.command:
@@ -15,12 +17,18 @@
       become: true
       when: ansible_distribution == 'Ubuntu'
       register: editor_result
+      tags:
+        - get_editor
 
     - debug:
-        # var: editor_result.stdout_lines
+        # var: editor_result.stdout_lines[2]
         msg: "{{ editor_result.stdout_lines[2] }}"
       when: ansible_distribution == 'Ubuntu'
+      tags:
+        - get_editor
 
 
 ### ansible-playbook execute
+# ansible-playbook -i inventory/hosts.ini set-service/set_editor.yml --limit centos7,ubuntu2204 --tags=get_editor
+#
 # ansible-playbook -i inventory/hosts.ini set-service/set_editor.yml --limit centos7,ubuntu2204
