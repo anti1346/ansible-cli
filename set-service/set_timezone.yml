@@ -9,11 +9,31 @@
         name: systemd
         state: present
       when: ansible_distribution == 'Ubuntu' or ansible_distribution == 'CentOS'
+      tags:
+        - timezone_setup
 
     - name: Set timezone
       ansible.builtin.command:
         cmd: timedatectl set-timezone Asia/Seoul
+      tags:
+        - timezone_setup
+
+    - name: Display current timezone
+      ansible.builtin.command:
+        cmd: timedatectl | grep Timezone
+      register: timezone_result
+      tags:
+        - timezone_check
+
+    - debug:
+        var: timezone_result.stdout_lines
+      tags:
+        - timezone_check
+
 
 
 ### ansible-playbook execute
+# ansible-playbook -i inventory/hosts.ini set-service/set_timezone.yml --limit centos7,ubuntu2204 --tags=timezone_setup
+# ansible-playbook -i inventory/hosts.ini set-service/set_timezone.yml --limit centos7,ubuntu2204 --tags=timezone_check
+#
 # ansible-playbook -i inventory/hosts.ini set-service/set_timezone.yml --limit centos7,ubuntu2204
