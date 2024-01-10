@@ -1,0 +1,19 @@
+---
+- name: Set Timezone to Asia/Seoul
+  hosts: all
+  become: yes
+
+  tasks:
+    - name: Install systemd package (if not already installed)
+      ansible.builtin.package:
+        name: systemd
+        state: present
+      when: ansible_distribution == 'Ubuntu' or ansible_distribution == 'CentOS'
+
+    - name: Set timezone
+      ansible.builtin.command:
+        cmd: timedatectl set-timezone Asia/Seoul
+
+
+##### ansible-playbook execute
+# ansible-playbook -i inventory/hosts.ini set-service/set_timezone.yml
