@@ -1,0 +1,84 @@
+---
+- name: Check OS version
+  hosts: all
+  become: true
+
+  tasks:
+    - name: Show distribution information
+      block:
+        - name: Display /etc/redhat-release on CentOS
+          when: ansible_distribution == "CentOS"
+          ansible.builtin.shell:
+            cmd: cat /etc/redhat-release
+          register: redhat_release
+
+        - name: Display /etc/lsb-release on Ubuntu
+          when: ansible_distribution == "Ubuntu"
+          ansible.builtin.shell:
+            cmd: cat /etc/lsb-release
+          register: ubuntu_release
+
+        - name: Debug distribution information on CentOS
+          ansible.builtin.debug:
+            var: redhat_release.stdout_lines
+          when: ansible_distribution == "CentOS"
+
+        - name: Debug distribution information on Ubuntu
+          ansible.builtin.debug:
+            var: ubuntu_release.stdout_lines
+          when: ansible_distribution == "Ubuntu"
+
+      rescue:
+        - name: Display unknown distribution message
+          ansible.builtin.debug:
+            msg: "Unknown distribution"
+
+      always:
+        - name: Display ansible_distribution fact
+          ansible.builtin.debug:
+            var: ansible_distribution
+
+
+# ---
+# - name: Check OS version
+#   hosts: all
+#   become: true
+
+#   tasks:
+#     - name: Show distribution information
+#       block:
+#         - name: Display /etc/redhat-release on Red Hat
+#           when: ansible_distribution == "CentOS"
+#           shell:
+#             cmd: cat /etc/redhat-release
+#           register: redhat_release
+
+#         - name: Display /etc/lsb-release on Ubuntu
+#           when: ansible_distribution == "Ubuntu"
+#           shell:
+#             cmd: cat /etc/lsb-release
+#           register: ubuntu_release
+
+#         - name: Debug distribution information
+#           debug:
+#             var: redhat_release.stdout_lines
+#           when: ansible_distribution == "CentOS"
+
+#         - name: Debug distribution information
+#           debug:
+#             var: ubuntu_release.stdout_lines
+#           when: ansible_distribution == "Ubuntu"
+
+#       rescue:
+#         - name: Display unknown distribution message
+#           debug:
+#             msg: "Unknown distribution"
+
+#       always:
+#         - name: Display ansible_distribution fact
+#           debug:
+#             var: ansible_distribution
+
+
+### ansible-playbook execute
+# ansible-playbook -i inventory/hosts.ini linux-configure-check/check_os_version.yml --limit localhost,centos7,ubuntu2204
