@@ -15,7 +15,7 @@
             - 2
             - 3
         - name: 블록 내부의 다른 작업
-          command: ls
+          command: nonexistent-command
       rescue:
         - name: 오류 처리(Handle errors)
           debug:
