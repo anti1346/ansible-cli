@@ -1,28 +1,22 @@
 ---
-- name: 예제 플레이북
-  hosts: all
-  become: true
+- name: Example Playbook
+  hosts: localhost
   gather_facts: false
+  become: true
 
   tasks:
     - name: Outer Block
       block:
-        - name: Loop Block
-          block:
-            - name: Task inside Loop
-              debug:
-                msg: "Loop Item: {{ item }}"
+        - name: Loop Block - Task 1
+          debug:
+            msg: "Loop Item: {{ item }}"
           loop:
             - 1
             - 2
             - 3
-          always:
-            - name: Always inside Loop
-              debug:
-                msg: "This always runs inside the loop"
-        - name: Another Task inside Outer Block
+        - name: Loop Block - Task 2
           debug:
-            msg: "This runs outside the loop"
+            msg: "Another Task inside Loop"
       rescue:
         - name: Rescue Block
           debug:
