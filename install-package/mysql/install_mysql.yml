@@ -57,7 +57,7 @@
       tags:
         - mysql_install
 
-    - name: {{ mysql_install_dir }} 디렉터리의 소유권 설정
+    - name: "{{ mysql_install_dir }} 디렉터리의 소유권 설정"
       file:
         path: "{{ mysql_install_dir }}"
         state: directory
@@ -74,7 +74,7 @@
       tags:
         - mysql_install
 
-    - name: Remove MySQL 아카이브 파일
+    - name: "{{ mysql_archive }} 아카이브 파일 삭제"
       file:
         path: "/tmp/{{ mysql_archive }}"
         state: absent
