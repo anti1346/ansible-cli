@@ -3,24 +3,6 @@
   become: yes
 
   tasks:
-    - name: rc.local 서비스 활성화 (Ubuntu)
-      systemd:
-        name: rc-local
-        enabled: yes
-      become_method: sudo
-      when: ansible_distribution == 'Ubuntu'
-      tags:
-        - rc-local_enable
-
-    - name: rc.local 서비스 시작 (Ubuntu)
-      systemd:
-        name: rc-local
-        state: started
-      become_method: sudo
-      when: ansible_distribution == 'Ubuntu'
-      tags:
-        - rc-local_start
-
     - name: rc.local 스크립트 파일 생성 (Ubuntu)
       copy:
         content: |
@@ -34,6 +16,14 @@
       tags:
         - rc-local_create
 
+    - name: rc.local 시작 및 서비스 활성화
+      systemd:
+        name: rc-local
+        state: started
+        enabled: yes
+      when: ansible_distribution in ['Ubuntu', 'CentOS']
+      tags:
+        - rc-local_start
 
 ### ansible-playbook execute
 # ansible-playbook -i inventory/hosts.ini linux-setup/set_rc-local.yml
