@@ -26,7 +26,8 @@
         - timezone_check
 
     - debug:
-        var: timezone_result.stdout_lines
+        # var: timezone_result.stdout_lines
+        var: timezone_result.stdout_lines | select("match", "^\\s+Time zone:")
       tags:
         - timezone_check
 
