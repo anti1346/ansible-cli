@@ -1,5 +1,5 @@
 ---
-- name: libncurses 패키지 설치
+- name: ncurses 패키지 설치
   hosts: all
   become: true
 
@@ -21,7 +21,7 @@
 
     - name: libncurses 패키지 설치 (for CentOS)
       yum:
-        name: libncurses
+        name: ncurses
         state: present
       when: ansible_distribution == 'CentOS'
       tags:
@@ -29,4 +29,4 @@
 
 
 ##### ansible-playbook execute
-# ansible-playbook -i inventory/hosts.ini install-package/mysql/install_libncurses.yml --limit localhost
+# ansible-playbook -i inventory/hosts.ini install-package/mysql/install_libncurses.yml --limit centos7,ubuntu2204
