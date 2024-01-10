@@ -28,7 +28,7 @@
       when: ansible_distribution in ['Ubuntu', 'CentOS']
       register: chrony_sources_result
 
-    - name: 디버그: Chrony 소스 결과
+    - name: Chrony 소스 결과
       ansible.builtin.debug:
         var: chrony_sources_result.stdout_lines
       when: ansible_distribution in ['Ubuntu', 'CentOS']
