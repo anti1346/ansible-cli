@@ -11,10 +11,22 @@
           # 여기에 스크립트 내용을 작성하세요
         dest: /etc/rc.local
         mode: '0755'  # 실행 권한을 부여합니다.
-      become_method: sudo
       when: ansible_distribution == 'Ubuntu'
       tags:
         - rc-local_create
+
+    - name: rc-local.service에 WantedBy 추가하기
+      blockinfile:
+        path: /usr/lib/systemd/system/rc-local.service
+        block: |
+          [Install]
+          WantedBy=multi-user.target
+      when: ansible_distribution == 'CentOS'
+
+    - name: Reload systemd
+      systemd:
+        daemon_reload: yes
+      when: ansible_distribution == 'CentOS'
 
     - name: rc.local 시작 및 서비스 활성화
       systemd:
@@ -26,7 +38,7 @@
         - rc-local_start
 
 ### ansible-playbook execute
-# ansible-playbook -i inventory/hosts.ini linux-setup/set_rc-local.yml
+# ansible-playbook -i inventory/hosts.ini linux-setup/set_rc-local.yml --limit centos7,ubuntu2204
 
 # systemctl restart rc-local
 # systemctl status rc-local
