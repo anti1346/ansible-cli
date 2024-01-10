@@ -8,7 +8,7 @@
     - name: 블록 시작
       block:
         - name: 실패 유도 작업
-          command: /path/to/nonexistent_command
+          command: nonexistent_command
       rescue:
         - name: 오류 발생 시 실행되는 작업
           debug:
