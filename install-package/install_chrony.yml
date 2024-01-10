@@ -1,0 +1,54 @@
+---
+- name: Chrony 설치 및 구성
+  hosts: all
+  become: yes
+  gather_facts: true
+
+  tasks:
+    - name: Chrony 설치
+      ansible.builtin.package:
+        name: chrony
+        state: present
+      when: ansible_distribution == 'Ubuntu' or ansible_distribution == 'CentOS'
+
+    - name: chrony.conf 생성
+      ansible.builtin.template:
+        src: "{{ playbook_dir }}/sourcedir/chrony/chrony.conf.j2"
+        dest: "{{ '/etc/chrony.conf' if ansible_distribution == 'CentOS' else '/etc/chrony/chrony.conf' }}"
+      when: ansible_distribution == 'Ubuntu' or ansible_distribution == 'CentOS'
+
+    - name: Chrony 구성 확인
+      ansible.builtin.command:
+        cmd: "chronyc -Q"
+      register: chrony_check_result
+      changed_when: false
+      when: ansible_distribution in ['Ubuntu', 'CentOS']
+
+    - name: Debug Chrony 확인 결과
+      ansible.builtin.debug:
+        var: chrony_check_result.stderr_lines[1]
+      when: ansible_distribution in ['Ubuntu', 'CentOS']
+
+  #   - name: 구성이 유효한 경우 Chrony 재시작하기
+  #     ansible.builtin.systemd:
+  #       name: chronyd
+  #       state: started
+  #     when: "'nginx: configuration file /etc/nginx/nginx.conf test is successful' in chrony_check_result.stderr_lines[1]"
+  #     notify:
+  #       - Reload Chrony
+
+  # handlers:
+  #   - name: Reload Chrony
+  #     ansible.builtin.systemd:
+  #       name: chronyd
+  #       state: restarted
+  #       enabled: yes
+  #     when: ansible_distribution == 'Ubuntu' or ansible_distribution == 'CentOS'
+
+
+###
+# ansible-inventory -i inventory --graph
+#
+# ansible-playbook -i inventory check-icmp-ping.yml --limit ubuntu22
+# 
+# ansible-playbook -i inventory install-package/install_chrony.yml --limit ubuntu22
