@@ -1,0 +1,26 @@
+---
+- name: Chrony 설치 및 설정
+  hosts: all
+  become: true
+  # gather_facts: true
+
+  tasks:
+    - name: 루프가 있는 블록 내부의 작업 집합
+      block:
+        - name: 블록 내부의 작업
+          debug:
+            msg: "블록 내부의 작업 - Item: {{ item }}"
+          loop:
+            - 1
+            - 2
+            - 3
+        - name: 블록 내부의 다른 작업
+          command: ls
+      rescue:
+        - name: 오류 처리(Handle errors)
+          debug:
+            msg: "오류가 발생했습니다. 지금 처리 중입니다."
+      always:
+        - name: 항상 실행해야 하는 정리 또는 기타 작업
+          debug:
+            msg: "이 작업은 성공 여부에 관계없이 항상 실행됩니다."
