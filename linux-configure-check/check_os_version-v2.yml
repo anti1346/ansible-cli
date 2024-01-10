@@ -1,0 +1,37 @@
+---
+- name: OS 버전 확인
+  hosts: all
+  become: true
+
+  tasks:
+    - name: OS 배포 정보 수집
+      ansible.builtin.setup:
+        gather_subset: distribution
+
+    - name: 배포 관련 정보 표시
+      ansible.builtin.debug:
+        msg: "{{ ansible_distribution }} {{ ansible_distribution_release }} {{ ansible_distribution_version }}"
+
+    - name: raw 배포 정보 표시
+      ansible.builtin.debug:
+        var: ansible_distribution
+      when: ansible_distribution == "CentOS" or ansible_distribution == "Ubuntu"
+
+    - name: raw 릴리스 정보 표시
+      ansible.builtin.debug:
+        var: ansible_distribution_release
+      when: ansible_distribution == "CentOS" or ansible_distribution == "Ubuntu"
+
+    - name: raw 버전 정보 표시
+      ansible.builtin.debug:
+        var: ansible_distribution_version
+      when: ansible_distribution == "CentOS" or ansible_distribution == "Ubuntu"
+
+    - name: 알 수 없는 배포판 처리
+      ansible.builtin.debug:
+        msg: "Unknown distribution"
+      when: ansible_distribution not in ["CentOS", "Ubuntu"]
+
+
+### ansible-playbook execute
+# ansible-playbook -i inventory/hosts.ini linux-configure-check/check_os_version-v2.yml --limit localhost,centos7,ubuntu2204
