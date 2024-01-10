@@ -1,5 +1,5 @@
 ---
-- name: Chrony 설치 및 설정
+- name: 예제 플레이북
   gather_facts: true
   hosts: all
   become: true

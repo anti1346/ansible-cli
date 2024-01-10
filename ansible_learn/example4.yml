@@ -1,0 +1,30 @@
+---
+- name: 예제 플레이북
+  hosts: all
+  become: true
+  # gather_facts: true
+
+  tasks:
+    - name: 실패 유도 작업
+      command: /path/to/nonexistent_command
+      register: result
+      ignore_errors: true
+
+    - name: 예외 처리
+      rescue:
+        - name: 특정 오류에 대한 처리
+          debug:
+            msg: "특정 오류가 발생했습니다."
+          when: "'Specific error message' in result.stderr"
+
+        - name: 기타 오류에 대한 처리
+          debug:
+            msg: "기타 오류가 발생했습니다."
+      always:
+        - name: 항상 실행되는 작업
+          debug:
+            msg: "이 작업은 항상 실행됩니다."
+
+
+### ansible-playbook execute
+# ansible-playbook -i inventory/hosts.ini ansible_learn/example4.yml --limit localhost,centos7,ubuntu2204
