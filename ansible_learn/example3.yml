@@ -1,6 +1,6 @@
 ---
-- name: Example Playbook
-  hosts: localhost
+- name: 플레이북 예시
+  hosts: all
   gather_facts: false
   become: true
 
