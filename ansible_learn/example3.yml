@@ -2,28 +2,35 @@
 - name: 예제 플레이북
   hosts: all
   become: true
-  # gather_facts: true
+  gather_facts: false
 
   tasks:
-    - name: 루프가 있는 블록 내부의 작업 집합
+    - name: 외부 블록
       block:
-        - name: 블록 내부의 작업
-          debug:
-            msg: "블록 내부의 작업 - Item: {{ item }}"
+        - name: Loop Block
+          block:
+            - name: Task inside Loop
+              debug:
+                msg: "Loop Item: {{ item }}"
           loop:
             - 1
             - 2
             - 3
-        - name: 블록 내부의 다른 작업
-          command: nonexistent-command
+          always:
+            - name: Always inside Loop
+              debug:
+                msg: "이것은 항상 루프 내부에서 실행됩니다."
+        - name: 외부 블록 안의 다른 작업
+          debug:
+            msg: "이것은 루프 외부에서 실행됩니다."
       rescue:
-        - name: 오류 처리(Handle errors)
+        - name: Rescue Block
           debug:
-            msg: "오류가 발생했습니다. 지금 처리 중입니다."
+            msg: "이것은 구조에서 실행됩니다(rescue)"
       always:
-        - name: 항상 실행해야 하는 정리 또는 기타 작업
+        - name: Always Block
           debug:
-            msg: "이 작업은 성공 여부에 관계없이 항상 실행됩니다."
+            msg: "이것은 항상 실행됩니다."
 
 
 ### ansible-playbook execute
