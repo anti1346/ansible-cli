@@ -11,7 +11,5 @@
         msg: "Host {{ inventory_hostname }} is {{ 'reachable' if ping_result.ping else 'unreachable' }}"
 
 
-
-
 ##### ansible-playbook execute
-# ansible-playbook check-ping.yml --limit localhost
+# ansible-playbook -i inventory/hosts.ini check-ping.yml --limit localhost
