@@ -7,6 +7,11 @@
     - name: Set editor using update-alternatives
       ansible.builtin.command:
         cmd: update-alternatives --set editor /usr/bin/vim.basic
+      when: ansible_distribution == 'Ubuntu'
+
+    - name: Get current editor using update-alternatives
+      ansible.builtin.command:
+        cmd: update-alternatives --display editor
       become: true
       when: ansible_distribution == 'Ubuntu'
       register: editor_result
