@@ -20,7 +20,7 @@
 
     - name: Display current timezone
       ansible.builtin.command:
-        cmd: timedatectl | grep Timezone
+        cmd: "timedatectl | grep Timezone"
       register: timezone_result
       tags:
         - timezone_check
@@ -29,7 +29,6 @@
         var: timezone_result.stdout_lines
       tags:
         - timezone_check
-
 
 
 ### ansible-playbook execute
