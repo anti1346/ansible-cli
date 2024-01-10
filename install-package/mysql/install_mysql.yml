@@ -14,7 +14,7 @@
   tasks:
     - name: MySQL 아카이브 복사 또는 다운로드
       copy:
-        src: "{{ playbook_dir }}/sourcedir/mysql/{{ mysql_archive }}"
+        src: "{{ playbook_dir }}/../sourcedir/mysql/{{ mysql_archive }}"
         dest: "/tmp/{{ mysql_archive }}"
       when: not download_mysql_tarball
       tags:
