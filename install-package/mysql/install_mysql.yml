@@ -5,27 +5,27 @@
   # gather_facts: false
 
   vars:
-    download_mysql_tarball: false
+    download_mysql_tarball: true
     mysql_archive: "mysql-8.0.34-linux-glibc2.28-x86_64.tar.gz"
     mysql_extract_dir: "/usr/local/mysql"
     mysql_install_dir: "/usr/local/mysql"
     mysql_data_dir: "/usr/local/mysql/data"
 
   tasks:
-    - name: MySQL 아카이브 복사 또는 다운로드
+    - name: MySQL 아카이브 복사(다운로드)
       copy:
         src: "{{ playbook_dir }}/../sourcedir/mysql/{{ mysql_archive }}"
         dest: "/tmp/{{ mysql_archive }}"
-      when: not download_mysql_tarball
+      when: download_mysql_tarball
       tags:
         - package_deploy
 
-    - name: MySQL 타볼 다운로드
+    - name: MySQL 홈페이지에서 MySQL 아키이브 다운로드
       get_url:
         url: "https://dev.mysql.com/get/Downloads/MySQL-8.0/{{ mysql_archive }}"
         dest: "/tmp/{{ mysql_archive }}"
         mode: '0644'
-      when: download_mysql_tarball
+      when: not download_mysql_tarball
       tags:
         - package_deploy
 
