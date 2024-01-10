@@ -1,0 +1,14 @@
+---
+- name: Set editor to /usr/bin/vim.basic on Ubuntu
+  hosts: all
+  become: true
+
+  tasks:
+    - name: Set editor using update-alternatives
+      ansible.builtin.command:
+        cmd: update-alternatives --set editor /usr/bin/vim.basic
+      when: ansible_distribution == 'Ubuntu'
+
+
+### ansible-playbook execute
+# ansible-playbook -i inventory/hosts.ini set-service/set_editor.yml --limit centos7,ubuntu2204
