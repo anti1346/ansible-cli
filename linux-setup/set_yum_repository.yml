@@ -17,7 +17,7 @@
         path: /etc/yum.repos.d/CentOS-Base.repo
         regexp: '^mirrorlist(.*)'
         replace: '#mirrorlist\1'
-        backup: yes
+        # backup: yes
       when: ansible_distribution == 'CentOS'
 
     - name: Replace baseurl in CentOS-Base.repo
@@ -25,7 +25,7 @@
         path: /etc/yum.repos.d/CentOS-Base.repo
         regexp: '^#baseurl=http:\/\/mirror.centos.org'
         replace: 'baseurl=https:\/\/mirror.kakao.com'
-        backup: yes
+        # backup: yes
       when: ansible_distribution == 'CentOS'
 
     - name: Display backup result
