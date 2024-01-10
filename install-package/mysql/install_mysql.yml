@@ -20,20 +20,17 @@
         - package_deploy
 
     - name: MySQL 홈페이지에서 MySQL 아키이브 다운로드
-      shell: "wget https://dev.mysql.com/get/Downloads/MySQL-8.0/{{ mysql_archive }} -O /tmp/{{ mysql_archive }} > /dev/null 2>&1"
+      shell: "wget -q https://dev.mysql.com/get/Downloads/MySQL-8.0/{{ mysql_archive }} -O /tmp/{{ mysql_archive }}"
       when: not download_mysql_tarball
       tags:
         - package_deploy
 
-    # - name: MySQL 설치 디렉터리가 있는지 확인
-    #   file:
-    #     path: "{{ item }}"
-    #     state: directory
-    #   loop:
-    #     - "{{ mysql_install_dir }}"
-    #     - "{{ mysql_data_dir }}"
-    #   tags:
-    #     - mysql_install
+    - name: "{{ mysql_install_dir }}" 디렉터리 생성 
+      file:
+        path: "{{ mysql_install_dir }}"
+        state: directory
+      tags:
+        - package_deploy
 
     - name: MySQL 아카이브 파일 압축 해제
       unarchive:
@@ -43,6 +40,13 @@
         extra_opts: "--strip-components=1"
       tags:
         - package_deploy
+
+    - name: "{{ mysql_data_dir }}" 디렉터리 생성
+      file:
+        path: "{{ mysql_data_dir }}"
+        state: directory
+      tags:
+        - mysql_install
 
     - name: MySQL 설치 디렉터리의 소유권 설정
       file:
