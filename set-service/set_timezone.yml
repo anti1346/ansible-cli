@@ -20,7 +20,7 @@
 
     - name: Display current timezone
       ansible.builtin.command:
-        cmd: "timedatectl | grep Timezone"
+        cmd: 'timedatectl | grep "Time zone"'
       register: timezone_result
       tags:
         - timezone_check
