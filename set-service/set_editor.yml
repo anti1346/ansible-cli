@@ -12,7 +12,7 @@
       register: editor_result
 
     - debug:
-        var: editor_result
+        var: editor_result.stdout_lines
       when: ansible_distribution == 'Ubuntu'
 
 
