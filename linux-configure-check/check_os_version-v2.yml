@@ -17,10 +17,10 @@
         var: ansible_distribution
       when: ansible_distribution == "CentOS" or ansible_distribution == "Ubuntu"
 
-    - name: raw 릴리스 정보 표시
-      ansible.builtin.debug:
-        var: ansible_distribution_release
-      when: ansible_distribution == "CentOS" or ansible_distribution == "Ubuntu"
+    # - name: raw 릴리스 정보 표시
+    #   ansible.builtin.debug:
+    #     var: ansible_distribution_release
+    #   when: ansible_distribution == "CentOS" or ansible_distribution == "Ubuntu"
 
     - name: raw 버전 정보 표시
       ansible.builtin.debug:
