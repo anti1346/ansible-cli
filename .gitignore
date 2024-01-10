@@ -4,3 +4,4 @@ ansible-spec.bk/*
 DLdir/*
 ansible.cfg
 inventory/*
+install-package/sourcedir/mysql/*.tar.gz
