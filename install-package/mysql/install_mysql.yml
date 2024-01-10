@@ -20,7 +20,7 @@
         - package_deploy
 
     - name: MySQL 홈페이지에서 MySQL 아키이브 다운로드
-      shell: "wget -q https://dev.mysql.com/get/Downloads/MySQL-8.0/{{ mysql_archive }} -O /tmp/{{ mysql_archive }}"
+      shell: "set -e && wget -q https://dev.mysql.com/get/Downloads/MySQL-8.0/{{ mysql_archive }} -O /tmp/{{ mysql_archive }}"
       when: not download_mysql_tarball
       tags:
         - package_deploy
@@ -74,7 +74,28 @@
     - name: my.cnf 파일 만들기
       template:
         src: "{{ playbook_dir }}/../sourcedir/mysql/my.cnf.j2"
-        dest: /etc/my.cnf
+        dest: "{{ mysql_install_dir }}/my.cnf"
+      tags:
+        - mysql_install
+
+    - name: my.cnf 심볼릭 링크 설정하기
+      file:
+        src: "{{ mysql_install_dir }}/my.cnf"
+        dest: /etc/my.conf
+        state: link
+      tags:
+        - mysql_install
+
+    - name: MySQL 바이너리에 대한 심볼릭 링크 설정하기
+      file:
+        src: "{{ mysql_install_dir }}/bin/{{ item }}"
+        dest: "/usr/bin/{{ item }}"
+        state: link
+      loop:
+        - mysql
+        - mysqld
+        - mysqld_safe
+        - mysqlbinlog
       tags:
         - mysql_install
 
