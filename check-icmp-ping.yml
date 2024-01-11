@@ -1,7 +1,8 @@
 ---
 - name: ICMP ping 테스트
   hosts: all
-
+  gather_facts: false
+  
   vars:
     icmp_test_ip: 8.8.8.8
 
