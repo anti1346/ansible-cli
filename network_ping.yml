@@ -1,7 +1,7 @@
 ---
 - name: 네트워크 서브넷에 대한 ICMP Ping 테스트
   hosts: all
-  # gather_facts: false
+  gather_facts: false
 
   vars:
     subnet: "192.168.1.0/24"
@@ -23,6 +23,7 @@
       debug:
         msg: "Host {{ item }} is {{ 'reachable' if ping_results.results[item].ping is defined else 'unreachable' }}"
       loop: "{{ network_targets }}"
+
 
 
 
