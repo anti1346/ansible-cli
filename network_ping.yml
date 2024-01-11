@@ -4,12 +4,12 @@
   gather_facts: false
 
   vars:
-    subnet: "192.168.10.0/24"
+    subnet: "192.168.1.0/24"
 
   tasks:
     - name: 서브넷에 포함된 모든 IP 주소 얻기
       set_fact:
-        network_targets: "{{ query('network_subnet', subnet) | list }}"
+        network_targets: "{{ lookup('ipaddr', subnet, network=True) }}"
       register: subnet_info
 
     - name: 각 호스트에 대한 ICMP Ping 테스트 수행
