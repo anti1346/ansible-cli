@@ -29,4 +29,4 @@
 # ansible localhost -m shell -a "ping -c3 -W3 8.8.8.8"
 
 ##### ansible-playbook execute
-# ansible-playbook -i inventory check-icmp-ping_v2.yml --limit localhost
+# ansible-playbook -i inventory check-icmp-ping_v2.yml --limit localhost,centos7,ubuntu22
