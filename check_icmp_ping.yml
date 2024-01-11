@@ -22,8 +22,8 @@
 
 ### Ansible
 # ansible -i ./inventory localhost -m shell -a "ping -c3 -W3 8.8.8.8"
-
-##### Ansible Playbook Execute
-# ansible-playbook -i inventory/hosts.ini check-icmp-ping.yaml --limit localhost
 #
-# ansible-playbook -i inventory/hosts.ini check-icmp-ping.yaml -e icmp_test_ip=1.1.1.1 --limit localhost
+### Ansible Playbook Execute
+# ansible-playbook -i inventory/hosts.ini check_icmp_ping.yml --limit localhost,centos7,ubuntu2204
+#
+# ansible-playbook -i inventory/hosts.ini check_icmp_ping.yml -e icmp_test_ip=1.1.1.1 --limit localhost,centos7,ubuntu2204

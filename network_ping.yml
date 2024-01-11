@@ -1,0 +1,27 @@
+---
+- name: 네트워크 범위에 대한 ICMP Ping 테스트
+  hosts: all
+  become: true
+  # gather_facts: false
+
+  vars:
+    network_range: "192.168.10.0/24"
+
+  tasks:
+    - name: 네트워크 범위에 대한 ICMP Ping 테스트 수행
+      shell: ping -c 3 -W 3 {{ hostvars[item]['ansible_default_ipv4']['address'] }}
+      register: result_ping
+      ignore_errors: true
+      with_items: "{{ groups['all'] }}"
+
+    - name: 각 호스트에 대한 도달 가능성 확인 및 표시
+      debug:
+        msg: "Host {{ item }} is {{ 'reachable' if result_ping.results[item].rc == 0 else 'unreachable' }}"
+      with_items: "{{ groups['all'] }}"
+
+
+### Ansible Playbook Execute
+#
+# ansible-playbook -i inventory/hosts.ini network_ping.yml --limit localhost,centos7,ubuntu2204
+#
+# ansible-playbook -i inventory/hosts.ini network_ping.yml -e network_range=192.168.10.0/24 --limit localhost,centos7,ubuntu2204

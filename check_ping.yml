@@ -11,5 +11,5 @@
         msg: "호스트 {{ inventory_hostname }}에 {{ '연결할 수 있습니다(reachable).' if ping_result.ping else '연결할 수 없습니다(unreachable).' }}"
 
 
-### ansible-playbook execute
+### Ansible Playbook Execute
 # ansible-playbook -i inventory/hosts.ini check-ping.yml --limit localhost
