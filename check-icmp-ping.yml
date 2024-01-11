@@ -3,15 +3,15 @@
   hosts: all
 
   vars:
-    google_ping: 8.8.8.8
+    google_ping: 9.9.9.9
 
   tasks:
-    - name: Perform ICMP ping test
+    - name: ICMP ping 테스트 수행
       shell: ping -c 3 -W 3 {{ google_ping }}
       register: result_ping
       ignore_errors: true
 
-    - name: Check if host is reachable
+    - name: 호스트에 접근 가능한지 확인
       set_fact:
         available: "{{ result_ping.rc == 0 }}"
 
