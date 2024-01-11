@@ -1,28 +1,29 @@
 ---
-- name: ICMP Ping Test for Network Range
-  hosts: all
+- name: 네트워크 서브넷에 대한 ICMP Ping 테스트
+  hosts: localhost
+  gather_facts: false
 
   vars:
-    network_range: "192.168.10.0/24"  # Replace with your desired network range
+    subnet: "192.168.1.0/24"
 
   tasks:
-    - name: Generate list of IP addresses to ping
+    - name: 서브넷에 포함된 모든 IP 주소 얻기
       set_fact:
-        ping_targets: "{{ network_range | ipaddr('host') }}"
+        network_targets: "{{ query('network_subnet', subnet) | list }}"
+      register: subnet_info
 
-    - name: Perform ICMP ping test for each IP address
+    - name: 각 호스트에 대한 ICMP Ping 테스트 수행
       ping:
         data: "{{ item }}"
-        count: 3
-        interval: 1
-        timeout: 3
+      loop: "{{ subnet_info.network_targets }}"
       register: ping_results
-      loop: "{{ ping_targets }}"
+      ignore_errors: true
 
-    - name: Display reachability results
+    - name: 각 호스트에 대한 도달 가능성 확인 및 표시
       debug:
-        msg: "Host {{ item }} is {{ 'reachable' if ping_results.results[item].ping is defined else 'unreachable' }}"
-      loop: "{{ ping_targets }}"
+        msg: "Host {{ item.item }} is {{ 'reachable' if item.rc == 0 else 'unreachable' }}"
+      loop: "{{ ping_results.results }}"
+
 
 
 ### Ansible Playbook Execute
