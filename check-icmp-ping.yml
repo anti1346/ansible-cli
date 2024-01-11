@@ -3,15 +3,15 @@
   hosts: all
 
   vars:
-    google_ping: 8.8.8.8
+    icmp_test_ip: 8.8.8.8
 
   tasks:
-    - name: "{{ inventory_hostname }} 호스트에서 {{ google_ping }} IP로 ICMP ping 테스트 수행"
-      shell: ping -c 3 -W 3 {{ google_ping }}
+    - name: "{{ inventory_hostname }} 호스트에서 {{ icmp_test_ip }}로 ICMP ping 테스트 수행"
+      shell: ping -c 3 -W 3 {{ icmp_test_ip }}
       register: result_ping
       ignore_errors: true
 
-    - name: "{{ inventory_hostname }} 호스트에서 {{ google_ping }} IP로 접근 가능한지 확인"
+    - name: "{{ inventory_hostname }} 호스트에서 {{ icmp_test_ip }}로 접근 가능한지 확인"
       set_fact:
         available: "{{ result_ping.rc == 0 }}"
 
@@ -25,4 +25,4 @@
 ##### Ansible Playbook Execute
 # ansible-playbook -i inventory/hosts.ini check-icmp-ping.yaml --limit localhost
 #
-# ansible-playbook -i inventory/hosts.ini check-icmp-ping.yaml -e google_ping=1.1.1.1 --limit localhost
+# ansible-playbook -i inventory/hosts.ini check-icmp-ping.yaml -e icmp_test_ip=1.1.1.1 --limit localhost
