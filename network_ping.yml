@@ -14,9 +14,7 @@
     - name: 각 호스트에 대한 ICMP Ping 테스트 수행
       ping:
         data: "{{ item }}"
-        count: 3
-        interval: 1
-        timeout: 3
+      with_items: "{{ network_targets }}"
       register: ping_results
 
     - name: 각 호스트에 대한 도달 가능성 확인 및 표시
