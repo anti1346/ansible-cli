@@ -1,23 +1,62 @@
 ---
-- name: 네트워크 범위에 대한 ICMP Ping 테스트
+# - name: 네트워크 범위에 대한 ICMP Ping 테스트
+#   hosts: all
+#   become: true
+#   # gather_facts: false
+
+#   vars:
+#     network_range: "192.168.10.0/24"
+
+#   tasks:
+#     - name: 네트워크 범위에 대한 ICMP Ping 테스트 수행
+#       shell: ping -c 3 -W 3 {{ hostvars[item]['ansible_default_ipv4']['address'] }}
+#       register: result_ping
+#       ignore_errors: true
+#       with_items: "{{ groups['all'] }}"
+
+#     - name: 각 호스트에 대한 도달 가능성 확인 및 표시
+#       debug:
+#         msg: "Host {{ item }} is {{ 'reachable' if result_ping.results[item].rc == 0 else 'unreachable' }}"
+#       with_items: "{{ groups['all'] }}"
+
+- name: ICMP 핑 테스트 접근 가능 여부 체크
   hosts: all
-  become: true
-  # gather_facts: false
 
   vars:
-    network_range: "192.168.10.0/24"
+    ping_target_network: "192.168.10.0/24"
 
   tasks:
-    - name: 네트워크 범위에 대한 ICMP Ping 테스트 수행
-      shell: ping -c 3 -W 3 {{ hostvars[item]['ansible_default_ipv4']['address'] }}
-      register: result_ping
-      ignore_errors: true
-      with_items: "{{ groups['all'] }}"
+    - name: ICMP 핑 테스트 접근 가능 여부 체크
+      block:
+        - name: 체크할 대상 IP 주소 목록 생성
+          set_fact:
+            ping_target_ips: "{{ ping_target_network | ipaddr('network') | ipaddr('hosts') }}"
 
-    - name: 각 호스트에 대한 도달 가능성 확인 및 표시
-      debug:
-        msg: "Host {{ item }} is {{ 'reachable' if result_ping.results[item].rc == 0 else 'unreachable' }}"
-      with_items: "{{ groups['all'] }}"
+        - name: 각 IP 주소에 대한 ICMP 핑 테스트 수행
+          loop: "{{ ping_target_ips }}"
+          ping:
+            host: "{{ item }}"
+            count: 3
+            interval: 1
+            timeout: 3
+            register: ping_results
+
+        - name: 결과 출력
+          debug:
+            msg: |
+              ICMP 핑 테스트 접근 가능 여부 체크
+              IP 주소: {{ item }}
+              # Success: {{ ping_results.rc == 0 }}
+
+      rescue:
+        - name: 오류 발생 시 실행되는 블록
+          debug:
+            msg: "ICMP 핑 테스트 접근 가능 여부 체크 중 오류가 발생했습니다."
+
+      always:
+        - name: 항상 실행되는 블록
+          debug:
+            msg: "ICMP 핑 테스트 접근 가능 여부 체크가 완료되었습니다."
 
 
 ### Ansible Playbook Execute
