@@ -1,17 +1,17 @@
 ---
-- name: ICMP Ping Test
+- name: ICMP ping 테스트
   hosts: all
 
   vars:
-    google_ping: 9.9.9.9
+    google_ping: 8.8.8.8
 
   tasks:
-    - name: ICMP ping 테스트 수행
+    - name: "{{ inventory_hostname }} 호스트에서 {{ google_ping }} IP로 ICMP ping 테스트 수행"
       shell: ping -c 3 -W 3 {{ google_ping }}
       register: result_ping
       ignore_errors: true
 
-    - name: 호스트에 접근 가능한지 확인
+    - name: "{{ inventory_hostname }} 호스트에서 {{ google_ping }} IP로 접근 가능한지 확인"
       set_fact:
         available: "{{ result_ping.rc == 0 }}"
 
@@ -19,8 +19,10 @@
         msg: "Host {{ inventory_hostname }} is {{ 'reachable' if available else 'unreachable' }}"
 
 
-##### ansible
+### Ansible
 # ansible -i ./inventory localhost -m shell -a "ping -c3 -W3 8.8.8.8"
 
-##### ansible-playbook execute
+##### Ansible Playbook Execute
 # ansible-playbook -i inventory/hosts.ini check-icmp-ping.yaml --limit localhost
+#
+# ansible-playbook -i inventory/hosts.ini check-icmp-ping.yaml -e google_ping=1.1.1.1 --limit localhost
