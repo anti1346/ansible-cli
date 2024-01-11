@@ -1,6 +1,6 @@
 ---
 - name: 네트워크 서브넷에 대한 ICMP Ping 테스트
-  hosts: localhost
+  hosts: all
   gather_facts: false
 
   vars:
