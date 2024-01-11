@@ -9,20 +9,20 @@
   tasks:
     - name: 서브넷에 포함된 모든 IP 주소 얻기
       set_fact:
-        network_targets: "{{ lookup('ipaddr', subnet, network=True) }}"
-      register: subnet_info
+        network_targets: "{{ subnet | ipaddr('host') }}"
 
     - name: 각 호스트에 대한 ICMP Ping 테스트 수행
       ping:
         data: "{{ item }}"
-      loop: "{{ subnet_info.network_targets }}"
+        count: 3
+        interval: 1
+        timeout: 3
       register: ping_results
-      ignore_errors: true
 
     - name: 각 호스트에 대한 도달 가능성 확인 및 표시
       debug:
-        msg: "Host {{ item.item }} is {{ 'reachable' if item.rc == 0 else 'unreachable' }}"
-      loop: "{{ ping_results.results }}"
+        msg: "Host {{ item }} is {{ 'reachable' if ping_results.results[item].ping is defined else 'unreachable' }}"
+      loop: "{{ network_targets }}"
 
 
 
