@@ -1,0 +1,32 @@
+---
+- name: ICMP 핑 체크(Gateway로 핑 체크)
+  hosts: all
+
+  tasks:
+    - name: ICMP 핑 체크 블록
+      block:
+        - name: "{{ ansible_default_ipv4.gateway }} ICMP 핑 체크"
+          command: "ping -c 3 -i 1 -W 3 {{ ansible_default_ipv4.gateway }}"
+          register: ping_results
+          ignore_errors: true
+
+        - name: "{{ ansible_default_ipv4.gateway }} ICMP 핑 체크 결과 출력"
+          debug:
+            msg: "ICMP 핑 결과(Success) : {{ ping_results.rc == 0 }}"
+
+      rescue:
+        - name: 오류 발생 시 실행되는 블록
+          debug:
+            msg: "ICMP 핑 체크 중 오류가 발생했습니다."
+
+      always:
+        - name: 항상 실행되는 블록(ICMP 핑 체크 완료)
+          debug:
+            msg: "{{ ping_results.stdout_lines }}"
+
+
+##### ansible
+# ansible localhost -m shell -a "ping -c3 -W3 8.8.8.8"
+
+##### ansible-playbook execute
+# ansible-playbook -i inventory check-icmp-ping.yml --limit localhost
