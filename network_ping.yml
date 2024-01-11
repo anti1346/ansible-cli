@@ -20,7 +20,6 @@
     - name: 각 호스트에 대한 도달 가능성 확인 및 표시
       debug:
         msg: "Host {{ item }} is {{ 'reachable' if ping_results.results[item].ping is defined else 'unreachable' }}"
-      loop: "{{ network_targets }}"
 
 
 
