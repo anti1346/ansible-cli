@@ -6,14 +6,17 @@
   tasks:
     - name: 사용자 삭제
       user:
-        name: "{{ USER_NAME }}"
+        name: "{{ user_name }}"
         state: absent
 
     - name: sudoers.d 파일 삭제
       file:
-        path: "/etc/sudoers.d/{{ USER_NAME }}"
+        path: "/etc/sudoers.d/{{ user_name }}"
         state: absent
 
 
-##### ansible-playbook execute
-# ansible-playbook -i inventory.ini user_delete.yml --extra-vars "USER_NAME=<삭제할_사용자_이름>"
+### ansible-playbook execute
+# ansible-playbook -i inventory/hosts.ini user_command/user_delete.yml --extra-vars "user_name=<삭제할_사용자_이름>"
+#
+# ansible-playbook -i inventory/hosts.ini user_command/user_delete.yml --extra-vars "user_name=vagrant2" --limit centos7,ubuntu2204
+#
