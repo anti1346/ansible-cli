@@ -8,8 +8,8 @@
     user_id: 2002
     user_comment: "Infrastructure Team"
     user_shell: /bin/bash
-    ansible_ssh_user: ansible_user  # Your Ansible SSH user
     ssh_key_path: "~/.ssh/id_rsa.pub"
+    # ansible_ssh_user: vagrant  # Your Ansible SSH user
 
   tasks:
     - name: Check if {{ user_name }} group exists
@@ -57,4 +57,4 @@
 #
 # ansible-playbook -i inventory user_command/create_accoute_vagrant.yml --extra-vars "user_name=<생성할_사용자_이름>" --limit localhost
 #
-# ansible-playbook -i inventory user_command/create_accoute_vagrant.yml --limit localhost
+# ansible-playbook -i inventory user_command/create_accoute_vagrant.yml --limit centos7,ubuntu2204
