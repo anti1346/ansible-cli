@@ -3,6 +3,9 @@
   hosts: all
   become: true
 
+  vars:
+    user_name: vagrant  # Change this to the user you want to delete
+
   tasks:
     - name: 사용자 삭제
       user:
@@ -13,6 +16,12 @@
       file:
         path: "/etc/sudoers.d/{{ user_name }}"
         state: absent
+
+    - name: Remove user from sudoers file
+      lineinfile:
+        path: /etc/sudoers
+        state: absent
+        regexp: '^{{ user_name }}\s'
 
 
 ### ansible-playbook execute
