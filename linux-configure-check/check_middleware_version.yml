@@ -23,4 +23,4 @@
 ### Ansible Playbook Execute
 # ansible-inventory -i inventory --graph
 #
-# ansible-playbook -i inventory check_middleware_version.yml --limit serv-212
+# ansible-playbook -i inventory/hosts.ini linux-configure-check/check_os_version.yml --limit localhost,centos7,ubuntu2204
