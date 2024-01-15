@@ -1,0 +1,15 @@
+---
+- name: Gather Facts
+  hosts: all
+  gather_facts: true  # 기본값이지만 명확성을 위해 여기에 지정합니다.
+
+  tasks:
+    - name: Display gathered facts
+      debug:
+        var: ansible_facts
+
+
+### Ansible Playbook Execute
+#
+# ansible-playbook -i inventory/hosts.ini gather_facts_playbook.yml --limit centos7
+#
