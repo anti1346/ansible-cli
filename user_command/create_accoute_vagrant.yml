@@ -1,0 +1,58 @@
+---
+- name: Create user, add to sudoers, and copy SSH key
+  hosts: all
+  become: true
+
+  vars:
+    user_name: vagrant
+    user_id : 2002
+    user_comment : "Infrastructure Team"
+    user_shell: /bin/bash
+    ansible_ssh_user: ansible_user  # Your Ansible SSH user
+
+  tasks:
+    - name: "Check if {{ user_name }} group exists"
+      command: getent group {{ user_name }}
+      register: group_check
+      ignore_errors: true
+
+    - name: "Create {{ user_name }} group"
+      group:
+        name: "{{ user_name }}"
+        gid: "{{ user_id }}"
+      when: group_check.rc != 0
+
+    - name: "Check if {{ user_name }} user exists"
+      command: getent passwd {{ user_name }}
+      register: user_check
+      ignore_errors: true
+
+    - name: "Create {{ user_name }} user"
+      user:
+        name: "{{ user_name }}"
+        comment: "{{ user_comment }}"
+        home: "/home/{{ user_name }}"
+        shell: "{{ user_shell }}"
+        uid: "{{ user_id }}"
+        group: "{{ user_name }}"
+        createhome: yes
+      when: user_check.rc != 0
+
+    - name: "Add {{ user_name }} to sudoers"
+      lineinfile:
+        path: /etc/sudoers
+        line: '{{ user_name }} ALL=(ALL) NOPASSWD: ALL'
+        validate: 'visudo -cf %s'
+      when: user_check.rc != 0
+
+    - name: "Copy SSH key for {{ user_name }}"
+      authorized_key:
+        user: "{{ user_name }}"
+        key: "{{ lookup('file', '~/.ssh/id_rsa.pub') }}"
+
+
+##### Ansible Playbook Execute
+#
+# ansible-playbook -i inventory user_command/create_accoute_vagrant.yml --extra-vars "user_name=<생성할_사용자_이름>" --limit localhost
+#
+# ansible-playbook -i inventory user_command/create_accoute_vagrant.yml --limit localhost
