@@ -1,6 +1,8 @@
 ---
 - name: setup 모듈을 사용하여 facts 수집
   hosts: all
+  gather_facts: true
+  
   tasks:
     - name: setup 모듈을 사용하여 facts 수집
       setup:
