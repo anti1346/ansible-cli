@@ -46,11 +46,11 @@
         validate: 'visudo -cf %s'
       when: user_check.rc != 0
 
-    - name: Copy SSH key for {{ user_name }}
-      authorized_key:
-        user: "{{ user_name }}"
-        key: "{{ lookup('file', ssh_key_path) }}"
-      when: user_check.rc != 0
+    # - name: Copy SSH key for {{ user_name }}
+    #   authorized_key:
+    #     user: "{{ user_name }}"
+    #     key: "{{ lookup('file', ssh_key_path) }}"
+    #   when: user_check.rc != 0
 
 
 ##### Ansible Playbook Execute
