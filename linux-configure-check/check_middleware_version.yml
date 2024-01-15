@@ -7,8 +7,8 @@
   tasks:
     - name: 셸 스크립트를 원격 호스트에 복사
       copy:
-        content: "{{ lookup('file', 'check_middleware_versionv2.sh') }}"
-        dest: /tmp/check_middleware_versionv2.sh
+        content: "{{ lookup('file', 'check_middleware_version.sh') }}"
+        dest: /tmp/check_middleware_version.sh
         mode: 0755
 
     - name: Execute the shell script
@@ -21,6 +21,6 @@
 
 
 ### Ansible Playbook Execute
-# ansible-inventory -i inventory --graph
+# ansible-inventory -i inventory/hosts.ini --graph
 #
 # ansible-playbook -i inventory/hosts.ini linux-configure-check/check_os_version.yml --limit localhost,centos7,ubuntu2204
