@@ -1,11 +1,18 @@
 ---
 - name: setup 모듈을 사용하여 facts 수집
   hosts: all
-  gather_facts: true
-  
+
   tasks:
-    - name: setup 모듈을 사용하여 facts 수집
+    - name: Use setup module to collect facts
       setup:
+
+    - name: Display gathered facts
+      debug:
+        msg: "ansible_hostname = {{ ansible_hostname }}"
+
+    - name: Display gathered facts using ansible_facts
+      debug:
+        msg: "ansible_facts.hostname = {{ ansible_facts.hostname }}"
 
 
 ### Ansible Playbook Execute
