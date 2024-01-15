@@ -6,11 +6,11 @@
     - name: Use setup module to collect facts
       setup:
 
-    - name: Display gathered facts
+    - name: 수집된 facts 표시
       debug:
         msg: "ansible_hostname = {{ ansible_hostname }}"
 
-    - name: Display gathered facts using ansible_facts
+    - name: ansible_facts를 사용하여 수집된 facts 표시
       debug:
         msg: "ansible_facts.hostname = {{ ansible_facts.hostname }}"
 
