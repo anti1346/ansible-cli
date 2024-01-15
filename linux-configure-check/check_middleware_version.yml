@@ -12,7 +12,7 @@
         mode: 0755
 
     - name: Execute the shell script
-      command: "/tmp/check_middleware_versionv2.sh"
+      command: "/tmp/check_middleware_version.sh"
       register: script_result
 
     - name: Display the script execution result
@@ -23,4 +23,4 @@
 ### Ansible Playbook Execute
 # ansible-inventory -i inventory/hosts.ini --graph
 #
-# ansible-playbook -i inventory/hosts.ini linux-configure-check/check_os_version.yml --limit localhost,centos7,ubuntu2204
+# ansible-playbook -i inventory/hosts.ini linux-configure-check/check_middleware_version.yml --limit localhost,centos7,ubuntu2204
