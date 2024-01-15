@@ -6,23 +6,23 @@
   tasks:
     - name: 사용자 생성
       user:
-        name: "{{ USER_NAME }}"
+        name: "{{ user_name }}"
         shell: /bin/bash
         createhome: yes
-        home: "/home/users/{{ USER_NAME }}"
+        home: "/home/users/{{ user_name }}"
         state: present
       become: true
 
     - name: 패스워드 변경
       user:
-        name: "{{ USER_NAME }}"
-        password: "{{ PASSWORD | password_hash('sha512') }}"
+        name: "{{ user_name }}"
+        password: "{{ user_password | password_hash('sha512') }}"
 
     - name: sudoers.d 추가
       copy:
         content: |
-          {{ USER_NAME }} ALL=(ALL) NOPASSWD: ALL
-        dest: "/etc/sudoers.d/{{ USER_NAME }}"
+          {{ user_name }} ALL=(ALL) NOPASSWD: ALL
+        dest: "/etc/sudoers.d/{{ user_name }}"
         owner: root
         group: root
         mode: 0440
@@ -30,5 +30,5 @@
 
 
 ##### ansible-playbook execute
-# ansible-playbook -i inventory.ini user_command/user_create.yml --extra-vars "USER_NAME=<생성할_사용자_이름> PASSWORD=<사용자_암호>"
+# ansible-playbook -i inventory.ini user_command/user_create.yml --extra-vars "user_name=<생성할_사용자_이름> user_password=<사용자_암호>"
 

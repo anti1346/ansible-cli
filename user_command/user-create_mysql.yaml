@@ -3,15 +3,15 @@
   hosts: all
   become: true
   vars:
-    username: mysql
+    user_name: mysql
 
   tasks:
     - name: Create Linux User
       user:
-        name: "{{ username }}"
+        name: "{{ user_name }}"
         shell: /bin/false
         createhome: yes
-        home: "/usr/local/{{ username }}"
+        home: "/usr/local/{{ user_name }}"
         state: present
       become: true
 

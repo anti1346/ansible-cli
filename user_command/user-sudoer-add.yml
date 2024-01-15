@@ -7,8 +7,8 @@
     - name: sudoers.d 추가
       copy:
         content: |
-          {{ USER_NAME }} ALL=(ALL) NOPASSWD: ALL
-        dest: "/etc/sudoers.d/{{ USER_NAME }}"
+          {{ user_name }} ALL=(ALL) NOPASSWD: ALL
+        dest: "/etc/sudoers.d/{{ user_name }}"
         owner: root
         group: root
         mode: 0440
@@ -16,4 +16,4 @@
 
 
 ##### ansible-playbook execute
-# ansible-playbook -i inventory.ini user_sudoer_add.yaml --extra-vars "username=<생성할_사용자_이름>"
+# ansible-playbook -i inventory.ini user_sudoer_add.yaml --extra-vars "user_name=<생성할_사용자_이름>"

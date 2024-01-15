@@ -4,7 +4,7 @@
   become: true
 
   vars:
-    sudo_users:
+    user_name:
       - user1
       - user2
 
@@ -14,7 +14,7 @@
       register: passwd_users
       changed_when: false
       check_mode: no
-      loop: "{{ sudo_users }}"
+      loop: "{{ user_name }}"
 
     - name: Add sudoers permission for passwd users
       lineinfile:
