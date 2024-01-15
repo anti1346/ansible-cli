@@ -1,0 +1,12 @@
+---
+- name: setup 모듈을 사용하여 facts 수집
+  hosts: all
+  tasks:
+    - name: setup 모듈을 사용하여 facts 수집
+      setup:
+
+
+### Ansible Playbook Execute
+#
+# ansible-playbook -i inventory/hosts.ini setup_playbook.yml --limit centos7
+#
