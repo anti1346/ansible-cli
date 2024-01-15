@@ -1,0 +1,26 @@
+---
+- name: 사용자 지정 스크립트 실행 및 정보 수집
+  hosts: all
+  gather_facts: false
+  become: true
+
+  tasks:
+    - name: 셸 스크립트를 원격 호스트에 복사
+      copy:
+        content: "{{ lookup('file', 'check_middleware_versionv2.sh') }}"
+        dest: /tmp/check_middleware_versionv2.sh
+        mode: 0755
+
+    - name: Execute the shell script
+      command: "/tmp/check_middleware_versionv2.sh"
+      register: script_result
+
+    - name: Display the script execution result
+      debug:
+        var: script_result.stdout_lines
+
+
+### Ansible Playbook Execute
+# ansible-inventory -i inventory --graph
+#
+# ansible-playbook -i inventory check_middleware_version.yml --limit serv-212
