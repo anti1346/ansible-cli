@@ -4,7 +4,7 @@
   become: true
 
   vars:
-    user_name: user1
+    user_name: vagrant
 
   tasks:
     - name: Add PS1 to root's .bashrc
