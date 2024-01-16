@@ -39,4 +39,7 @@
 #
 # ansible-playbook -i inventory/hosts.ini user_command/user_ps1.yml --limit localhost
 #
+# ansible-playbook -i inventory/hosts.ini user_command/user_ps1.yml --limit centos7,ubuntu2204 --tags ps1_root,ps1_user1
+#
 # ansible-playbook -i inventory/hosts.ini user_command/user_ps1.yml --limit localhost --tags ps1_root,ps1_user1
+#
