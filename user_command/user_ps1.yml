@@ -1,0 +1,33 @@
+---
+- name: Configure root's PS1
+  hosts: all
+  become: true
+
+  vars:
+    user_name: user1
+
+  tasks:
+    - name: Add PS1 to root's .bashrc
+      lineinfile:
+        dest: /root/.bashrc
+        line: 'export PS1="\[\033[01;32m\]\u\[\e[m\]\[\033[01;32m\]@\[\e[m\]\[\033[01;32m\]\h\[\e[m\]:\[\033[01;34m\]\W\[\e[m\]$ "'
+      become_user: root
+      ignore_errors: yes
+      tags:
+        - ps1_root
+
+    - name: Add PS1 to user's .bashrc
+      lineinfile:
+        dest: /home/{{ user_name }}/.bashrc
+        line: 'export PS1="\[\033[01;32m\]\u\[\e[m\]\[\033[01;32m\]@\[\e[m\]\[\033[01;32m\]\h\[\e[m\]:\[\033[01;34m\]\W\[\e[m\]$ "'
+      become_user: root
+      ignore_errors: yes
+      tags:
+        - ps1_user1
+
+
+##### Ansible Playbook Execute
+#
+# ansible-playbook -i inventory/hosts.ini user_command/user_ps1.yml --limit localhost
+#
+# ansible-playbook -i inventory/hosts.ini user_command/user_ps1.yml --limit localhost --tags ps1_root,ps1_user1
