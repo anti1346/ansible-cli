@@ -11,6 +11,8 @@
       lineinfile:
         dest: /root/.bashrc
         line: 'export PS1="\[\033[01;32m\]\u\[\e[m\]\[\033[01;32m\]@\[\e[m\]\[\033[01;32m\]\h\[\e[m\]:\[\033[01;34m\]\W\[\e[m\]$ "'
+        create: yes
+      ignore_errors: yes
       tags:
         - ps1_root
 
@@ -18,6 +20,8 @@
       lineinfile:
         dest: "/home/{{ user_name }}/.bashrc"
         line: 'export PS1="\[\e[31m\]\u\[\e[m\]\[\e[37m\]@\[\e[m\]\[\e[33m\]\h\[\e[m\]:\[\033[01;36m\]\W\[\e[m\]$ "'
+        create: yes
+      ignore_errors: yes
       tags:
         - ps1_user1
 
@@ -25,6 +29,8 @@
       lineinfile:
         dest: "/home/{{ user_name }}/.bashrc"
         line: 'export PS1="\[\e[33m\]\u\[\e[m\]\[\e[37m\]@\[\e[m\]\[\e[34m\]\h\[\e[m\]:\[\033[01;31m\]\W\[\e[m\]$ "'
+        create: yes
+      ignore_errors: yes
       tags:
         - ps1_user2
 
