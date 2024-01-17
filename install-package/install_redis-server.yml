@@ -8,9 +8,10 @@
     redis_version: 7.2.1
     redis_download_url: "https://download.redis.io/releases/redis-{{ redis_version }}.tar.gz"
     redis_source_dir: "/tmp/redis-{{ redis_version }}"
+    redis_cli_path: "/usr/local/bin/redis-cli"
 
   tasks:
-    - name: redis 그룹 생성
+    - name: redis 그룹 만들기
       ansible.builtin.group:
         name: redis
         gid: 122
@@ -18,7 +19,7 @@
       tags:
         - add_user
 
-    - name: redis 사용자 생성
+    - name: redis 사용자 만들기
       ansible.builtin.user:
         name: redis
         comment: "redis user"
@@ -38,12 +39,16 @@
         - gcc
         - make
       when: ansible_pkg_mgr == 'apt' or ansible_pkg_mgr == 'yum'
+      tags:
+        - install_redis
 
     - name: build-essential 패키지 설치
       package:
         name: build-essential
         state: present
       when: "'Ubuntu' in ansible_distribution"
+      tags:
+        - install_redis
 
     - name: Redis 소스 코드 다운로드
       get_url:
@@ -56,14 +61,20 @@
         src: "{{ redis_source_dir }}.tar.gz"
         dest: "/tmp"
         remote_src: yes
+      tags:
+        - install_redis
 
     - name: Redis 빌드
       shell:
         cmd: make -j $(($(nproc) + 1)) -C "{{ redis_source_dir }}"
+      tags:
+        - install_redis
 
     - name: Redis 설치
       command:
         cmd: make -C "{{ redis_source_dir }}" install
+      tags:
+        - install_redis
 
     - name: Redis 디렉터리 만들기
       file:
@@ -77,9 +88,11 @@
         - /var/run/redis
         - /var/lib/redis
         - /var/log/redis
+      tags:
+        - install_redis
 
     - name: Redis 구성 파일 복사
-      ansible.builtin.template:
+      template:
         src: "{{ playbook_dir }}/sourcedir/redis/redis.conf.j2"
         dest: /etc/redis/redis.conf
         owner: redis
@@ -88,12 +101,12 @@
         backup: yes
       # vars:
       #   nginx_repo_path: "{{ '/etc/redis/redis.conf' if ansible_distribution == 'Ubuntu' else '/etc/redis/redis.conf' }}"
-      when: ansible_distribution == 'Ubuntu' or ansible_distribution == 'CentOS'
+      # when: ansible_distribution == 'Ubuntu' or ansible_distribution == 'CentOS'
       tags:
         - install_redis
 
     - name: Redis systemd 서비스 파일 생성
-      ansible.builtin.template:
+      template:
         src: "{{ playbook_dir }}/sourcedir/redis/redis.service.j2"
         dest: "{{ redis_service_path }}"
         owner: redis
@@ -106,12 +119,14 @@
       tags:
         - install_redis
 
-    - name: sysctl을 사용하여 TCP 백로그를 설정
+    - name: sysctl을 사용하여 TCP backlog를 설정
       sysctl:
         name: net.core.somaxconn
         value: 65535
         state: present
         reload: yes
+      tags:
+        - sysctl_set
 
     - name: sysctl을 사용하여 vm.overcommit_memory를 설정
       sysctl:
@@ -119,31 +134,45 @@
         value: 1
         state: present
         reload: yes
+      tags:
+        - sysctl_set
 
-    - name: Create symbolic link
+    - name: Systemd에 대한 심볼릭 링크 생성
       file:
         src: /lib/systemd/system/redis-server.service
         dest: /etc/systemd/system/redis.service
         state: link
       when: ansible_distribution == 'Ubuntu'
+      tags:
+        - install_redis
 
     - name: Systemd 리로드
       command: systemctl daemon-reload
+      tags:
+        - install_redis
 
     - name: Redis 서비스 시작
       systemd:
         name: redis
         state: started
         enabled: yes
+      tags:
+        - install_redis
 
     - name: Redis 상태 확인
-      command: /usr/local/bin/redis-cli ping
+      command: "{{ redis_cli_path }} ping"
       register: redis_status
+      tags:
+        - redis-server_status
 
     - name: Redis가 실행 중이 아닌 경우 실패
       fail:
         msg: "Redis is not running."
       when: redis_status.rc != 0
+      notify:
+        - Reload Redis
+      tags:
+        - redis-server_status
 
   handlers:
     - name: Reload Redis
