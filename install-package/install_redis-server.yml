@@ -137,7 +137,7 @@
         enabled: yes
 
     - name: Redis 상태 확인
-      command: redis-cli ping
+      command: /usr/local/bin/redis-cli ping
       register: redis_status
 
     - name: Redis가 실행 중이 아닌 경우 실패
