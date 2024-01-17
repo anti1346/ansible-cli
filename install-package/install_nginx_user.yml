@@ -1,0 +1,48 @@
+---
+- name: Nginx 설치 및 구성
+  hosts: all
+  become: yes
+  gather_facts: true
+
+  tasks:
+    - name: tape 그룹 제거
+      ansible.builtin.group:
+        name: tape
+        state: absent
+      when: ansible_distribution == 'CentOS'
+      tags:
+        - remove_tape_group
+
+    - name: www-data 사용자 생성
+      ansible.builtin.user:
+        name: www-data
+        comment: "nginx user"
+        shell: /usr/sbin/nologin
+        home: /var/www
+        uid: 33
+        system: yes
+      tags:
+        - add_user
+
+    - name: www-data 그룹 생성
+      ansible.builtin.group:
+        name: www-data
+        gid: 33
+        system: yes
+      tags:
+        - add_user
+
+    - name: www-data 그룹에 www-data 사용자 추가하기
+      ansible.builtin.user:
+        name: www-data
+        groups: www-data
+      tags:
+        - add_user
+
+
+###
+# ansible-inventory -i inventory --graph
+#
+# ansible-playbook -i inventory check-icmp-ping.yml --limit ubuntu22
+# 
+# ansible-playbook -i inventory install-package/install_nginx_user.yml --limit ubuntu22,centos7
