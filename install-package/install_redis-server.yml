@@ -1,0 +1,159 @@
+---
+- name: Redis 서버 설치 및 구성
+  hosts: all
+  become: true
+  gather_facts: true
+
+  vars:
+    redis_version: 7.2.1
+    redis_download_url: "https://download.redis.io/releases/redis-{{ redis_version }}.tar.gz"
+    redis_source_dir: "/tmp/redis-{{ redis_version }}"
+
+  tasks:
+    - name: redis 그룹 생성
+      ansible.builtin.group:
+        name: redis
+        gid: 122
+        system: yes
+      tags:
+        - add_user
+
+    - name: redis 사용자 생성
+      ansible.builtin.user:
+        name: redis
+        comment: "redis user"
+        shell: /usr/sbin/nologin
+        home: /var/lib/redis
+        uid: 117
+        group: redis
+        system: yes
+      tags:
+        - add_user
+
+    - name: 필수 패키지 설치(required packages)
+      package:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - gcc
+        - make
+      when: ansible_pkg_mgr == 'apt' or ansible_pkg_mgr == 'yum'
+
+    - name: build-essential 패키지 설치
+      package:
+        name: build-essential
+        state: present
+      when: "'Ubuntu' in ansible_distribution"
+
+    - name: Redis 소스 코드 다운로드
+      get_url:
+        url: "{{ redis_download_url }}"
+        dest: "{{ redis_source_dir }}.tar.gz"
+        mode: '0644'
+
+    - name: Redis 소스 코드 압축 해제
+      unarchive:
+        src: "{{ redis_source_dir }}.tar.gz"
+        dest: "/tmp"
+        remote_src: yes
+
+    - name: Redis 빌드
+      shell:
+        cmd: make -j $(($(nproc) + 1)) -C "{{ redis_source_dir }}"
+
+    - name: Redis 설치
+      command:
+        cmd: make -C "{{ redis_source_dir }}" install
+
+    - name: Redis 디렉터리 만들기
+      file:
+        path: "{{ item }}"
+        state: directory
+        owner: redis
+        group: redis
+        mode: 0755
+      loop:
+        - /etc/redis
+        - /var/run/redis
+        - /var/lib/redis
+        - /var/log/redis
+
+    - name: Redis 구성 파일 복사
+      ansible.builtin.template:
+        src: "{{ playbook_dir }}/sourcedir/redis/redis.conf.j2"
+        dest: /etc/redis/redis.conf
+        owner: redis
+        group: redis
+        mode: 0644
+        backup: yes
+      # vars:
+      #   nginx_repo_path: "{{ '/etc/redis/redis.conf' if ansible_distribution == 'Ubuntu' else '/etc/redis/redis.conf' }}"
+      when: ansible_distribution == 'Ubuntu' or ansible_distribution == 'CentOS'
+      tags:
+        - install_redis
+
+    - name: Redis systemd 서비스 파일 생성
+      ansible.builtin.template:
+        src: "{{ playbook_dir }}/sourcedir/redis/redis.service.j2"
+        dest: /lib/systemd/system/redis-server.service
+        owner: redis
+        group: redis
+        mode: 0644
+        backup: yes
+      # vars:
+      #   nginx_repo_path: "{{ '/etc/systemd/system/redis.service' if ansible_distribution == 'Ubuntu' else '/etc/systemd/system/redis.service' }}"
+      when: ansible_distribution == 'Ubuntu' or ansible_distribution == 'CentOS'
+      tags:
+        - install_redis
+
+    - name: sysctl을 사용하여 TCP 백로그를 설정
+      sysctl:
+        name: net.core.somaxconn
+        value: 65535
+        state: present
+        reload: yes
+
+    - name: sysctl을 사용하여 vm.overcommit_memory를 설정
+      sysctl:
+        name: vm.overcommit_memory
+        value: 1
+        state: present
+        reload: yes
+
+    - name: Create symbolic link
+      file:
+        src: /lib/systemd/system/redis-server.service
+        dest: /etc/systemd/system/redis.service
+        state: link
+
+    - name: Systemd 리로드
+      command: systemctl daemon-reload
+
+    # - name: Redis 서비스 시작
+    #   systemd:
+    #     name: redis
+    #     state: started
+    #     enabled: yes
+
+    # - name: Redis 상태 확인
+    #   command: redis-cli ping
+    #   register: redis_status
+
+    # - name: Redis가 실행 중이 아닌 경우 실패
+    #   fail:
+    #     msg: "Redis is not running."
+    #   when: redis_status.rc != 0
+
+  # handlers:
+  #   - name: Reload Redis
+  #     systemd:
+  #       name: redis
+  #       state: reloaded
+
+
+### Ansible Playbook Execute
+# ansible-inventory -i inventory --graph
+#
+# ansible-playbook -i inventory check-icmp-ping.yml --limit ubuntu22
+# 
+# ansible-playbook -i inventory install-package/install_redis-server.yml --limit ubuntu22
