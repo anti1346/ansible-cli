@@ -4,6 +4,20 @@
   become: true
 
   tasks:
+    - name: 현재 시스템 사용자 목록 가져오기
+      shell:
+        cmd: "cat /etc/passwd | cut -d: -f1"
+      register: current_users
+      changed_when: false
+      tags:
+        - get_users
+
+    - name: Display all users (for debugging)
+      debug:
+        var: current_users.stdout_lines
+      tags:
+        - get_users
+
     - name: Remove System Users
       user:
         name: "{{ item }}"
@@ -40,8 +54,10 @@
         - tape
         - video
       ignore_errors: yes
+      tags:
+        - remove_unnecessary_users
 
 
-
-##### ansible-playbook execute
-# ansible-playbook -i inventory/hosts.ini isms-p/delete-user_default.yaml --limit localhost
+### Ansible Playbook Execute
+#
+# ansible-playbook -i inventory/hosts.ini user_command/delete_users_default.yml --limit centos7,ubuntu22
