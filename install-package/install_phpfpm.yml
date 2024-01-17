@@ -106,7 +106,7 @@
         - php{{ php_version }}-rdkafka
       when: "'Ubuntu' in ansible_distribution"
 
-    - name: Create Directories
+    - name: 디렉터리 만들기
       file:
         path: "{{ item }}"
         state: directory
@@ -217,3 +217,6 @@
 # ansible-playbook -i inventory check-icmp-ping.yml --limit ubuntu22
 # 
 # ansible-playbook -i inventory install-package/install_phpfpm.yml --limit centos7
+#
+# ansible-playbook -i inventory install-package/install_phpfpm.yml --limit centos7 -t verify_phpfpm_status
+
