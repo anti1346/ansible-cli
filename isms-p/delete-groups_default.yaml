@@ -1,14 +1,22 @@
----
-- name: Remove Unnecessary Groups
+- name: 불필요한 그룹 제거
   hosts: all
   become: true
+  gather_facts: true
 
   tasks:
-    - name: Get a list of all groups
-      shell: "cat /etc/group | cut -d: -f1"
-      register: all_groups
+    - name: 현재 시스템 그룹 목록 가져오기
+      shell:
+        cmd: "cat /etc/group | cut -d: -f1"
+      register: current_groups
       changed_when: false
-      check_mode: no
+      tags:
+        - get_groups
+
+    - name: Display all groups (for debugging)
+      debug:
+        var: current_groups.stdout_lines
+      tags:
+        - get_groups
 
     - name: Define unnecessary groups to remove
       set_fact:
@@ -18,15 +26,24 @@
           - tape
           - floppy
           - audio
+          - cdrom
+          - games
+          - dialout
+          - dip
+      tags:
+        - remove_unnecessary_groups
 
     - name: Remove unnecessary groups
       group:
         name: "{{ item }}"
         state: absent
       with_items: "{{ unnecessary_groups }}"
-      when: item in all_groups.stdout_lines
+      when: item in current_groups.stdout_lines
+      tags:
+        - remove_unnecessary_groups
 
 
-
-##### ansible-playbook execute
-# ansible-playbook -i inventory/hosts.ini isms-p/delete-groups_default.yaml --limit localhost
+##### Ansible Playbook Execute
+# ansible-playbook -i inventory/hosts.ini user_command/delete_groups_default.yml --limit localhost
+#
+# ansible-playbook -i inventory/hosts.ini user_command/delete_groups_default.yml --limit centos7,ubuntu22 -t get_groups
