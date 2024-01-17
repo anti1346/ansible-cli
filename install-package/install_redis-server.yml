@@ -132,26 +132,26 @@
     - name: Systemd 리로드
       command: systemctl daemon-reload
 
-    # - name: Redis 서비스 시작
-    #   systemd:
-    #     name: redis
-    #     state: started
-    #     enabled: yes
+    - name: Redis 서비스 시작
+      systemd:
+        name: redis
+        state: started
+        enabled: yes
 
-    # - name: Redis 상태 확인
-    #   command: redis-cli ping
-    #   register: redis_status
+    - name: Redis 상태 확인
+      command: redis-cli ping
+      register: redis_status
 
-    # - name: Redis가 실행 중이 아닌 경우 실패
-    #   fail:
-    #     msg: "Redis is not running."
-    #   when: redis_status.rc != 0
+    - name: Redis가 실행 중이 아닌 경우 실패
+      fail:
+        msg: "Redis is not running."
+      when: redis_status.rc != 0
 
-  # handlers:
-  #   - name: Reload Redis
-  #     systemd:
-  #       name: redis
-  #       state: reloaded
+  handlers:
+    - name: Reload Redis
+      systemd:
+        name: redis
+        state: reloaded
 
 
 ### Ansible Playbook Execute
