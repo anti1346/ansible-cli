@@ -196,6 +196,20 @@
         enabled: yes
       when: "'Ubuntu' in ansible_distribution"
 
+    - name: curl을 사용하여 PHP-FPM 상태 확인
+      ansible.builtin.shell:
+        cmd: "curl http://localhost/status"
+      register: curl_result
+      ignore_errors: true
+      tags:
+        - verify_phpfpm_status
+
+    - name: curl 결과 디버그
+      ansible.builtin.debug:
+        var: curl_result.stdout_lines
+      tags:
+        - verify_phpfpm_status
+        
 
 ###
 # ansible-inventory -i inventory --graph
