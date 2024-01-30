@@ -5,7 +5,7 @@
   gather_facts: true
 
   tasks:
-    - name: Install prerequisites
+    - name: 필수 패키지 설치
       package:
         name: "{{ item }}"
         state: present
@@ -18,41 +18,52 @@
       tags:
         - nginx_setup
 
-    - name: Import nginx signing key
-      shell: "gpg --dearmor < /tmp/nginx_signing.key | sudo tee /usr/share/keyrings/nginx-archive-keyring.gpg >/dev/null"
-      args:
-        creates: /usr/share/keyrings/nginx-archive-keyring.gpg
+    - name: Nginx 서명 키 가져오기 및 확인
+      block:
+        - name: 키 가져오기
+          apt_key:
+            url: https://nginx.org/keys/nginx_signing.key
+            keyring: /usr/share/keyrings/nginx-archive-keyring.gpg
+        - name: 키 확인
+          apt_key:
+            key: /usr/share/keyrings/nginx-archive-keyring.gpg
+            check_signature: yes
       tags:
         - nginx_setup
 
-    - name: Verify downloaded key
-      shell: "gpg --dry-run --quiet --no-keyring --import --import-options import-show /usr/share/keyrings/nginx-archive-keyring.gpg"
-      tags:
-        - nginx_setup
-
-    - name: Set up Nginx apt repository for stable packages
-      shell: "echo 'deb [signed-by=/usr/share/keyrings/nginx-archive-keyring.gpg] http://nginx.org/packages/ubuntu {{ ansible_lsb.codename }} nginx' | sudo tee /etc/apt/sources.list.d/nginx.list"
-      tags:
-        - nginx_setup
-
-    - name: Set up repository pinning
-      shell: "echo -e 'Package: *\nPin: origin nginx.org\nPin: release o=nginx\nPin-Priority: 900\n' | sudo tee /etc/apt/preferences.d/99nginx"
-      tags:
-        - nginx_setup
-
-    - name: Update apt cache
-      apt:
-        update_cache: yes
-      tags:
-        - nginx_setup
-        - nginx_install
-
-    - name: Install nginx
-      apt:
-        name: nginx
+    - name: Nginx 저장소 설정
+      apt_repository:
+        repo: deb [signed-by=/usr/share/keyrings/nginx-archive-keyring.gpg] http://nginx.org/packages/ubuntu {{ ansible_lsb.codename }} nginx
         state: present
       tags:
-        - nginx_install
+        - nginx_setup
+
+    - name: 저장소 우선순위 설정
+      copy:
+        content: |
+          Package: *
+          Pin: origin nginx.org
+          Pin: release o=nginx
+          Pin-Priority: 900
+        dest: /etc/apt/preferences.d/99nginx
+      tags:
+        - nginx_setup
+
+    - name: 패키지 목록 업데이트 및 Nginx 설치
+      block:
+        - name: 패키지 목록 업데이트
+          apt:
+            update_cache: yes
+          tags:
+            - nginx_setup
+            - nginx_install
+        - name: Nginx 설치
+          apt:
+            name: nginx
+            state: present
+          tags:
+            - nginx_install
+
 
 
 ###
