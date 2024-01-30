@@ -69,8 +69,7 @@
         - nginx_setup
 
     - name: Compile Nginx
-      command: >
-        make -j$(nproc) 
+      command: make -j$(nproc) 
       args:
         chdir: "/tmp/nginx-1.24.0"
       tags:
