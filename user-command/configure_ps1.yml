@@ -29,4 +29,4 @@
 ###
 # ansible-inventory -i inventory/hosts.ini --graph
 #
-# ansible-playbook -i inventory/hosts.ini user_command/configure_ps1.yml --limit localhost
+# ansible-playbook -i inventory/hosts.ini user-command/configure_ps1.yml --limit localhost
