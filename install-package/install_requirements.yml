@@ -32,8 +32,8 @@
 
 
 ###
-# ansible-inventory -i inventory --graph
+# ansible-inventory -i inventory/hosts.ini --graph
 #
-# ansible-playbook -i inventory check-icmp-ping.yml --limit ubuntu22
+# ansible-playbook -i inventory/hosts.ini check-icmp-ping.yml --limit ubuntu22
 # 
-# ansible-playbook -i inventory install-package/install_requirements.yml --limit ubuntu22
+# ansible-playbook -i inventory/hosts.ini install-package/install_requirements.yml --limit ubuntu22
