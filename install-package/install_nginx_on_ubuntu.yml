@@ -38,17 +38,6 @@
       tags:
         - nginx_setup
 
-    - name: 저장소 우선순위 설정
-      copy:
-        content: |
-          Package: *
-          Pin: origin nginx.org
-          Pin: release o=nginx
-          Pin-Priority: 900
-        dest: /etc/apt/preferences.d/99nginx
-      tags:
-        - nginx_setup
-
     - name: 패키지 목록 업데이트 및 Nginx 설치
       block:
         - name: 패키지 목록 업데이트
