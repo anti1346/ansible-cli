@@ -1,0 +1,26 @@
+---
+- name: PS1 구성
+  hosts: all
+  become: yes
+  tasks:
+    - name: Set PS1 for ubuntu user
+      lineinfile:
+        path: /home/ubuntu/.bashrc
+        line: 'export PS1="\[\e[31m\]\u\[\e[m\]\[\e[37m\]@\[\e[m\]\[\e[33m\]\h\[\e[m\]:\[\033[01;36m\]\W\[\e[m\]$ "'
+        owner: ubuntu
+        group: ubuntu
+      when: ansible_user == 'ubuntu'
+
+    - name: Set PS1 for vagrant user
+      lineinfile:
+        path: /home/vagrant/.bashrc
+        line: 'export PS1="\[\e[33m\]\u\[\e[m\]\[\e[37m\]@\[\e[m\]\[\e[34m\]\h\[\e[m\]:\[\033[01;31m\]\W\[\e[m\]$ "'
+        owner: vagrant
+        group: vagrant
+      when: ansible_user == 'vagrant'
+
+    - name: Set PS1 for root user
+      lineinfile:
+        path: /root/.bashrc
+        line: 'export PS1="\[\033[01;32m\]\u\[\e[m\]\[\033[01;32m\]@\[\e[m\]\[\033[01;32m\]\h\[\e[m\]:\[\033[01;34m\]\W\[\e[m\]$ "'
+      when: ansible_user == 'root'
