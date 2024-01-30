@@ -69,10 +69,10 @@
         - nginx_setup
 
     - name: Compile Nginx
-      make:
+      command: >
+        make -j$(nproc) 
+      args:
         chdir: "/tmp/nginx-1.24.0"
-        target: all
-        jobs: "{{ ansible_processor_cores }}"
       tags:
         - nginx_compile
 
