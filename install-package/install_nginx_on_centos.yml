@@ -1,0 +1,49 @@
+---
+- name: Nginx 설치 및 구성
+  hosts: all
+  become: yes
+  gather_facts: true
+
+  tasks:
+    - name: Install yum-utils
+      yum:
+        name: yum-utils
+        state: present
+      tags:
+        - nginx_setup
+
+    - name: Create nginx repo file for stable packages
+      template:
+        src: nginx.repo.j2
+        dest: /etc/yum.repos.d/nginx.repo
+        owner: root
+        group: root
+        mode: '0644'
+        backup: yes
+        validate: /bin/yum-config-manager --dump
+      vars:
+        nginx_repo_baseurl: "http://nginx.org/packages/centos/{{ ansible_distribution_major_version }}/{{ ansible_architecture }}/"
+
+    - name: Update yum cache
+      yum:
+        name: '*'
+        state: latest
+      tags:
+        - nginx_setup
+        - nginx_install
+
+    - name: Install nginx
+      yum:
+        name: nginx
+        state: present
+      tags:
+        - nginx_install
+
+
+
+###
+# ansible-inventory -i inventory/hosts.ini --graph
+#
+# ansible-playbook -i inventory/hosts.ini check-icmp-ping.yml --limit ubuntu22
+# 
+# ansible-playbook -i inventory/hosts.ini install-package/install_nginx.yml --limit ubuntu22,centos7

@@ -19,7 +19,7 @@
         - nginx_setup
 
     - name: Import nginx signing key
-      shell: "curl https://nginx.org/keys/nginx_signing.key | gpg --dearmor | sudo tee /usr/share/keyrings/nginx-archive-keyring.gpg >/dev/null"
+      ansible.builtin.shell: "gpg --dearmor < /tmp/nginx_signing.key | sudo tee /usr/share/keyrings/nginx-archive-keyring.gpg >/dev/null"
       args:
         creates: /usr/share/keyrings/nginx-archive-keyring.gpg
       tags:
