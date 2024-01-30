@@ -60,4 +60,4 @@
 #
 # ansible-playbook -i inventory/hosts.ini check-icmp-ping.yml --limit ubuntu22
 # 
-# ansible-playbook -i inventory/hosts.ini install-package/install_nginx.yml --limit ubuntu22,centos7
+# ansible-playbook -i inventory/hosts.ini install-package/install_nginx_on_ubuntu.yml --limit ubuntu22,centos7
