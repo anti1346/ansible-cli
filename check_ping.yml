@@ -12,4 +12,4 @@
 
 
 ### Ansible Playbook Execute
-# ansible-playbook -i inventory/hosts.ini check-ping.yml --limit localhost
+# ansible-playbook -i inventory/hosts.ini check_ping.yml --limit localhost
