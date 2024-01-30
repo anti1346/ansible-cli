@@ -23,10 +23,10 @@
         state: restarted
       when: ansible_distribution in ['Ubuntu', 'CentOS']
 
-    # - name: 재시작 후 Chrony 구성 확인
-    #   command:
-    #     cmd: "systemctl restart chronyd"
-    #   when: ansible_distribution in ['Ubuntu', 'CentOS']
+    - name: 재시작 후 Chrony 구성 확인
+      command:
+        cmd: "systemctl restart chronyd"
+      when: ansible_distribution in ['Ubuntu', 'CentOS']
 
     - name: Chrony 소스 확인
       command:
