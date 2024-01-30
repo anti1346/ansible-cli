@@ -1,0 +1,63 @@
+---
+- name: Nginx 설치 및 구성
+  hosts: all
+  become: yes
+  gather_facts: true
+
+  tasks:
+    - name: Install prerequisites
+      package:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - curl
+        - gnupg2
+        - ca-certificates
+        - lsb-release
+        - ubuntu-keyring
+      tags:
+        - nginx_setup
+
+    - name: Import nginx signing key
+      shell: "curl https://nginx.org/keys/nginx_signing.key | gpg --dearmor | sudo tee /usr/share/keyrings/nginx-archive-keyring.gpg >/dev/null"
+      args:
+        creates: /usr/share/keyrings/nginx-archive-keyring.gpg
+      tags:
+        - nginx_setup
+
+    - name: Verify downloaded key
+      shell: "gpg --dry-run --quiet --no-keyring --import --import-options import-show /usr/share/keyrings/nginx-archive-keyring.gpg"
+      tags:
+        - nginx_setup
+
+    - name: Set up Nginx apt repository for stable packages
+      shell: "echo 'deb [signed-by=/usr/share/keyrings/nginx-archive-keyring.gpg] http://nginx.org/packages/ubuntu {{ ansible_lsb.codename }} nginx' | sudo tee /etc/apt/sources.list.d/nginx.list"
+      tags:
+        - nginx_setup
+
+    - name: Set up repository pinning
+      shell: "echo -e 'Package: *\nPin: origin nginx.org\nPin: release o=nginx\nPin-Priority: 900\n' | sudo tee /etc/apt/preferences.d/99nginx"
+      tags:
+        - nginx_setup
+
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+      tags:
+        - nginx_setup
+        - nginx_install
+
+    - name: Install nginx
+      apt:
+        name: nginx
+        state: present
+      tags:
+        - nginx_install
+
+
+###
+# ansible-inventory -i inventory/hosts.ini --graph
+#
+# ansible-playbook -i inventory/hosts.ini check-icmp-ping.yml --limit ubuntu22
+# 
+# ansible-playbook -i inventory/hosts.ini install-package/install_nginx.yml --limit ubuntu22,centos7

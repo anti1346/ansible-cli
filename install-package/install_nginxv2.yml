@@ -55,12 +55,12 @@
       tags:
         - install_nginx
 
-    - name: 패키지 캐시 새로 고침
-      command:
-        cmd: "{{ 'apt-get update' if ansible_distribution == 'Ubuntu' else 'yum makecache' }}"
-      when: ansible_distribution == 'Ubuntu' or ansible_distribution == 'CentOS'
-      tags:
-        - install_nginx
+    # - name: 패키지 캐시 새로 고침
+    #   command:
+    #     cmd: "{{ 'apt-get update' if ansible_distribution == 'Ubuntu' else 'yum makecache' }}"
+    #   when: ansible_distribution == 'Ubuntu' or ansible_distribution == 'CentOS'
+    #   tags:
+    #     - install_nginx
 
     - name: Nginx 기본 구성 복사(nginx.conf)
       template:
