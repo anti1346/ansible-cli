@@ -13,14 +13,14 @@
       tags:
         - install_nginx
 
-    - name: Nginx 리포지토리 키 다운로드
-    # curl -fsSL https://nginx.org/keys/nginx_signing.key -o /tmp/nginx_signing.key
-      get_url:
-        url: https://nginx.org/keys/nginx_signing.key
-        dest: /tmp/nginx_signing.key
-      when: ansible_distribution == 'Ubuntu'
-      tags:
-        - install_nginx
+    # - name: Nginx 리포지토리 키 다운로드
+    # # curl -fsSL https://nginx.org/keys/nginx_signing.key -o /tmp/nginx_signing.key
+    #   get_url:
+    #     url: https://nginx.org/keys/nginx_signing.key
+    #     dest: /tmp/nginx_signing.key
+    #   when: ansible_distribution == 'Ubuntu'
+    #   tags:
+    #     - install_nginx
 
     - name: Nginx 리포지토리 키 추가
       ansible.builtin.command: 
