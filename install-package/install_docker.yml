@@ -37,6 +37,6 @@
 # ansible -i inventory/hosts.ini localhost -m shell -a "ping -c3 -W3 8.8.8.8"
 #
 ### Ansible Playbook Execute
-# ansible-playbook -i inventory/hosts.ini install_docker.yml --limit localhost,centos7,ubuntu2204
+# ansible-playbook -i inventory/hosts.ini install-package/install_docker.yml --limit localhost,k_group
 #
-# ansible-playbook -i inventory/hosts.ini install_docker.yml --limit localhost,centos7,ubuntu2204
+# ansible-playbook -i inventory/hosts.ini install-package/install_docker.yml --limit localhost,k_group
