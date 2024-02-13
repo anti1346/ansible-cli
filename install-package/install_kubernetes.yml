@@ -78,7 +78,7 @@
         - kubernetes_install
 
     - name: Check kubectl version
-      command: kubectl version --short --client
+      command: kubectl version --client
       register: kubectl_version
       tags:
         - kubernetes_install
