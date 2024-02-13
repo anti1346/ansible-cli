@@ -5,6 +5,20 @@
   gather_facts: true
 
   tasks:
+    - name: Kubernetes 아카이브 keyring 다운로드
+      become: yes
+      ansible.builtin.get_url:
+        url: https://packages.cloud.google.com/apt/doc/apt-key.gpg
+        dest: /etc/apt/keyrings/kubernetes-archive-keyring.gpg
+        mode: '0644'
+
+    - name: Kubernetes apt 리포지토리 추가하기
+      become: yes
+      ansible.builtin.lineinfile:
+        path: /etc/apt/sources.list.d/kubernetes.list
+        line: "deb [signed-by=/etc/apt/keyrings/kubernetes-archive-keyring.gpg] https://apt.kubernetes.io/ kubernetes-xenial main"
+        create: yes
+
     - name: "Kubernetes 패키지 설치"
       apt:
         name:
