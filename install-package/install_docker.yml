@@ -1,0 +1,42 @@
+---
+- name: Docker 설치 및 구성
+  hosts: all
+  become: yes
+  gather_facts: true
+
+  tasks:
+    - name: "Docker 설치 확인"
+      apt:
+        name: docker.io
+        state: present
+        update_cache: yes
+
+    - name: "Docker 서비스 시작"
+      service:
+        name: docker
+        state: started
+        enabled: yes
+
+    - name: "Docker 그룹 추가"
+      user:
+        name: "{{ ansible_user }}"
+        groups: docker
+        append: yes
+
+    - name: "Docker 버전 확인"
+      command: docker version
+      register: docker_version
+
+    - name: "Docker 버전 출력"
+      debug:
+        msg: "Docker version: {{ docker_version.stdout }}"
+
+
+
+### Ansible
+# ansible -i inventory/hosts.ini localhost -m shell -a "ping -c3 -W3 8.8.8.8"
+#
+### Ansible Playbook Execute
+# ansible-playbook -i inventory/hosts.ini install_docker.yml --limit localhost,centos7,ubuntu2204
+#
+# ansible-playbook -i inventory/hosts.ini install_docker.yml --limit localhost,centos7,ubuntu2204
