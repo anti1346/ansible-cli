@@ -13,36 +13,72 @@
           - kubectl
         state: present
         update_cache: yes
+      tags:
+        - kubernetes_install
 
     - name: "kubelet 서비스 시작 및 활성화"
       service:
         name: kubelet
         state: started
         enabled: yes
+      tags:
+        - kubernetes_install
+
+    # - name: "kubeadm init 실행"
+    #   command: kubeadm init --pod-network-cidr=10.244.0.0/16
+    #   register: kubeadm_init
+    #   tags:
+    #     - kubeadm_init
+
+    # - name: "kubeadm join 정보 출력"
+    #   debug:
+    #     msg: "{{ kubeadm_init.stdout }}"
+    #   tags:
+    #     - kubeadm_init
+
+    # - name: "kubectl --kubeconfig 설정"
+    #   lineinfile:
+    #     path: ~/.bashrc
+    #     line: "export KUBECONFIG=/etc/kubernetes/admin.conf"
+    #   tags:
+    #     - kubeadm_init
 
     - name: Check kubeadm version
       command: kubeadm version
       register: kubeadm_version
+      tags:
+        - kubernetes_install
 
     - name: Check kubelet version
       command: kubelet --version
       register: kubelet_version
+      tags:
+        - kubernetes_install
 
     - name: Check kubectl version
       command: kubectl version --short --client
       register: kubectl_version
+      tags:
+        - kubernetes_install
 
     - name: Display kubeadm version
       debug:
         msg: "{{ kubeadm_version.stdout }}"
+      tags:
+        - kubernetes_install
 
     - name: Display kubelet version
       debug:
         msg: "{{ kubelet_version.stdout }}"
+      tags:
+        - kubernetes_install
 
     - name: Display kubectl version
       debug:
         msg: "{{ kubectl_version.stdout }}"
+      tags:
+        - kubernetes_install
+
 
 
 
