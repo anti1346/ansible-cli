@@ -7,8 +7,8 @@
   tasks:
     - name: "Kubernetes 아카이브 keyring 다운로드"
       get_url:
-        url: https://packages.cloud.google.com/apt/doc/apt-key.gpg
-        dest: /etc/apt/keyrings/kubernetes-archive-keyring.gpg
+        url: https://dl.k8s.io/apt/doc/apt-key.gpg
+        dest: /usr/share/keyrings/kubernetes-archive-keyring.gpg
         mode: '0644'
       tags:
         - kubernetes_install
@@ -16,7 +16,7 @@
     - name: "Kubernetes apt 리포지토리 추가하기"
       lineinfile:
         path: /etc/apt/sources.list.d/kubernetes.list
-        line: "deb [signed-by=/etc/apt/keyrings/kubernetes-archive-keyring.gpg] https://apt.kubernetes.io/ kubernetes-xenial main"
+        line: "deb [signed-by=/usr/share/keyrings/kubernetes-archive-keyring.gpg] https://apt.kubernetes.io/ kubernetes-xenial main"
         create: yes
       tags:
         - kubernetes_install
