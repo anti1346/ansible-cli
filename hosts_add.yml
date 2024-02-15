@@ -25,7 +25,7 @@
         - update_hosts_file
 
     - name: 호스트 파일 콘텐츠 표시
-      cmd: cat /etc/hosts | grep "### Kubernetes Hosts BEGIN"
+      command: cat /etc/hosts | grep "### Kubernetes Hosts BEGIN"
       register: entry_check
       changed_when: false
       failed_when: false
