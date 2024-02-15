@@ -49,4 +49,6 @@
 
 
 ##### ansible-playbook execute
-# ansible-playbook -i inventory/hosts.ini hosts_add.yml --limit localhost
+# ansible-playbook -i inventory/hosts.ini hosts_add.yml --limit localhost --skip-tags update_hosts_file_rollback
+#
+# ansible-playbook -i inventory/hosts.ini hosts_add.yml --limit localhost --tags update_hosts_file
