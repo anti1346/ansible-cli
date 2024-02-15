@@ -12,4 +12,4 @@
 
 
 ### ansible-playbook execute
-# ansible-playbook -i inventory/hosts.ini linux-configure-check/check_os_version.yml --limit localhost,kuber_group
+# ansible-playbook -i inventory/hosts.ini linux-setup/disable_ufw.yml --limit localhost
