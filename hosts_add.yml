@@ -1,0 +1,50 @@
+---
+- name: 호스트 파일에 호스트 추가하기
+  hosts: all
+  become: true
+
+  tasks:
+    - name: 원본 호스트 파일 백업
+      copy:
+        src: /etc/hosts
+        dest: /etc/hosts.bak
+      ignore_errors: true
+
+    - name: 호스트 파일에 호스트 추가하기
+      blockinfile:
+        path: /etc/hosts
+        marker: "### Kubernetes Hosts BEGIN"
+        block: |
+          192.168.56.61 knode1
+          192.168.56.62 knode2
+          192.168.56.63 knode3
+          192.168.56.51 control-plane
+      tags:
+        - update_hosts_file
+
+    - name: 호스트 파일 콘텐츠 표시
+      cmd: cat /etc/hosts | grep "### Kubernetes Hosts BEGIN"
+      register: entry_check
+      changed_when: false
+      failed_when: false
+      tags:
+        - update_hosts_file
+
+    - name: 추가된 호스트 표시
+      debug:
+        msg: "{{ entry_check.stdout }}"
+      when: entry_check.stdout != ""
+      tags:
+        - update_hosts_file
+
+    - name: 변경 사항이 적용되지 않은 경우 호스트 파일 롤백
+      command: cp /etc/hosts.bak /etc/hosts
+      when: entry_check.stdout == ""
+      changed_when: false
+      ignore_errors: true
+      tags:
+        - update_hosts_file_rollback
+
+
+##### ansible-playbook execute
+# ansible-playbook -i inventory/hosts.ini hosts_add.yml --limit localhost
