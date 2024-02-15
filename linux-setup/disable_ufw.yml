@@ -1,0 +1,15 @@
+---
+- name: UFW 중지 및 비활성화(Disable UFW)
+  hosts: all
+  become: true
+
+  tasks:
+    - name: Stop UFW
+      systemd:
+        name: ufw
+        state: stopped
+        enabled: no
+
+
+### ansible-playbook execute
+# ansible-playbook -i inventory/hosts.ini linux-configure-check/check_os_version.yml --limit localhost,kuber_group
