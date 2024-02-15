@@ -9,6 +9,8 @@
         src: /etc/hosts
         dest: /etc/hosts.bak
       ignore_errors: true
+      tags:
+        - update_hosts_file
 
     - name: 호스트 파일에 호스트 추가하기
       blockinfile:
