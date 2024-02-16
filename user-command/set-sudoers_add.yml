@@ -6,7 +6,7 @@
   vars:
     user_names:
       - ubuntu
-      - user2
+      - vagrant
 
   tasks:
     - name: 비밀번호 파일에서 사용자 목록 가져오기
@@ -15,22 +15,27 @@
       changed_when: false
       check_mode: no
 
+    - name: 사용자가 이미 존재하는지 확인
+      set_fact:
+        existing_users: "{{ existing_users | default([]) + [item.split(':')[0]] }}"
+      loop: "{{ passwd_users.stdout_lines }}"
+
     - name: passwd 사용자에게 sudoers 권한 추가하기
-      ansible.builtin.file:
+      file:
         path: "/etc/sudoers.d/{{ item }}"
         state: touch
         mode: '440'
       loop: "{{ user_names }}"
-      when: item != 'root'
+      when: item != 'root' and item not in existing_users
 
     - name: passwd 사용자에 대한 sudoers 권한 설정
-      ansible.builtin.copy:
+      copy:
         dest: "/etc/sudoers.d/{{ item }}"
         content: '{{ item }} ALL=(ALL) NOPASSWD: ALL'
         validate: 'visudo -cf %s'
         unsafe_writes: yes
       loop: "{{ user_names }}"
-      when: item != 'root'
+      when: item != 'root' and item not in existing_users
 
 
 
