@@ -4,17 +4,20 @@
   become: true
 
   tasks:
-    - name: 스왑을 비활성화하려면 /etc/fstab을 업데이트
-      lineinfile:
+    - name: Turn off swap
+      command: swapoff -a
+
+    - name: /etc/fstab에서 스왑 항목을 주석 처리
+      replace:
         path: /etc/fstab
-        regexp: '^/dev/mapper/.*swap.*'
-        line: '#/dev/mapper/... none swap sw 0 0'
-        state: present
-      notify: Reload fstab
+        regexp: '^(\S+\s+)(\S+\s+swap\s+\S+\s+\S+\s*)(\S+\s*)'
+        replace: '\1#\2\3'
+      ignore_errors: yes
 
   handlers:
     - name: Reload fstab
-      ansible.builtin.command: mount -a
+      shell: mount -a
+      ignore_errors: yes
 
 
 
