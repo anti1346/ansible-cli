@@ -11,7 +11,7 @@
       replace:
         path: /etc/fstab
         regexp: '^(\S+\s+)(\S+\s+swap\s+\S+\s+\S+\s*)(\S+\s*)'
-        replace: '\1#\2\3'
+        replace: '#\1\2\3'
       ignore_errors: yes
 
   handlers:
