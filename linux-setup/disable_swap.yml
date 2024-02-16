@@ -1,0 +1,22 @@
+---
+- name: /etc/fstab에서 스왑 사용 안 함
+  hosts: all
+  become: true
+
+  tasks:
+    - name: 스왑을 비활성화하려면 /etc/fstab을 업데이트
+      lineinfile:
+        path: /etc/fstab
+        regexp: '^/dev/mapper/.*swap.*'
+        line: '#/dev/mapper/... none swap sw 0 0'
+        state: present
+      notify: Reload fstab
+
+  handlers:
+    - name: Reload fstab
+      ansible.builtin.command: mount -a
+
+
+
+### ansible-playbook execute
+# ansible-playbook -i inventory/hosts.ini linux-setup/disable_swap.yml --limit localhost

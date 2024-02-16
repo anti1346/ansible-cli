@@ -1,0 +1,39 @@
+---
+- name: passwd 파일에 사용자에 대한 sudoers 파일 권한 추가하기
+  hosts: all
+  become: true
+
+  vars:
+    user_names:
+      - ubuntu
+      - user2
+
+  tasks:
+    - name: 비밀번호 파일에서 사용자 목록 가져오기
+      command: getent passwd
+      register: passwd_users
+      changed_when: false
+      check_mode: no
+
+    - name: passwd 사용자에게 sudoers 권한 추가하기
+      ansible.builtin.file:
+        path: "/etc/sudoers.d/{{ item }}"
+        state: touch
+        mode: '440'
+      loop: "{{ user_names }}"
+      when: item != 'root'
+
+    - name: passwd 사용자에 대한 sudoers 권한 설정
+      ansible.builtin.copy:
+        dest: "/etc/sudoers.d/{{ item }}"
+        content: '{{ item }} ALL=(ALL) NOPASSWD: ALL'
+        validate: 'visudo -cf %s'
+        unsafe_writes: yes
+      loop: "{{ user_names }}"
+      when: item != 'root'
+
+
+
+### ansible-playbook execute
+# ansible-playbook -i inventory/hosts.ini user-command/set-sudoers_add.yml --limit localhost
+
