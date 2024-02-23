@@ -1,0 +1,20 @@
+---
+- name: 핑 체크
+  hosts: all
+  gather_facts: no
+
+  tasks:
+    - name: 호스트별 핑 체크
+      ping:
+      register: ping_result
+
+    - name: 핑 결과 출력
+      debug:
+        var: ping_result.ping
+
+
+##### ansible
+# ansible localhost -m shell -a "ping -c3 -W3 8.8.8.8"
+
+##### ansible-playbook execute
+# ansible-playbook -i inventory/hosts.ini ping.yml --limit localhost
