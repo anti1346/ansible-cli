@@ -44,6 +44,6 @@
 
 
 ##### Ansible Playbook Execute
-# ansible-playbook -i inventory/hosts.ini user_command/delete_groups_default.yml --limit localhost
+# ansible-playbook -i inventory/hosts.ini user-command/delete_groups_default.yml --limit localhost
 #
-# ansible-playbook -i inventory/hosts.ini user_command/delete_groups_default.yml --limit centos7,ubuntu22 -t get_groups
+# ansible-playbook -i inventory/hosts.ini user-command/delete_groups_default.yml --limit centos7,ubuntu22 -t get_groups

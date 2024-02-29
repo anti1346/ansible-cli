@@ -60,4 +60,4 @@
 
 ### Ansible Playbook Execute
 #
-# ansible-playbook -i inventory/hosts.ini user_command/delete_users_default.yml --limit centos7,ubuntu22
+# ansible-playbook -i inventory/hosts.ini user-command/delete_users_default.yml --limit centos7,ubuntu22
