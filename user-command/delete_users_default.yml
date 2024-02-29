@@ -53,6 +53,7 @@
         - floppy
         - tape
         - video
+        - tss
       ignore_errors: yes
       tags:
         - remove_unnecessary_users
