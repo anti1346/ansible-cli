@@ -43,6 +43,6 @@
 ###
 # ansible-inventory -i inventory/hosts.ini --graph
 #
-# ansible-playbook -i inventory/hosts.ini check-icmp-ping.yml --limit ubuntu22
+# ansible-playbook -i inventory/hosts.ini install-package/install_chrony.yml --limit ubuntu22
 # 
 # ansible-playbook -i inventory/hosts.ini install-package/install_chrony.yml --limit centos7,ubuntu2204

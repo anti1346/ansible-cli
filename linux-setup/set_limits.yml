@@ -2,7 +2,7 @@
 - name: 시스템 리소스 설정
   hosts: all
   become: yes
-  
+
   tasks:
     - name: Set soft nofile limit
       sysctl:
@@ -22,14 +22,14 @@
     - name: Set soft memlock limit
       sysctl:
         name: vm.max_map_count
-        value: unlimited
+        value: 262144
         state: present
       become_user: root
 
     - name: Set hard memlock limit
       sysctl:
         name: vm.max_map_count
-        value: unlimited
+        value: 262144
         state: present
         sysctl_set: yes
       become_user: root
