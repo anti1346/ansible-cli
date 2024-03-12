@@ -1,0 +1,38 @@
+---
+- name: /etc/sysctl.conf 설정 적용
+  hosts: all
+  become: yes
+
+  tasks:
+    - name: Add vm.max_map_count to sysctl.conf
+      lineinfile:
+        path: /etc/sysctl.conf
+        line: 'vm.max_map_count = 262144'
+        regexp: '^vm.max_map_count'
+        state: present
+      become_user: root
+
+    - name: Add vm.swappiness to sysctl.conf
+      lineinfile:
+        path: /etc/sysctl.conf
+        line: 'vm.swappiness = 1'
+        regexp: '^vm.swappiness'
+        state: present
+      become_user: root
+
+    - name: Add fs.file-max to sysctl.conf
+      lineinfile:
+        path: /etc/sysctl.conf
+        line: 'fs.file-max = 65536'
+        regexp: '^fs.file-max'
+        state: present
+      become_user: root
+
+    - name: Reload sysctl.conf
+      command: sysctl --system
+      become_user: root
+
+
+
+### ansible-playbook execute
+# ansible-playbook -i inventory/hosts.ini linux-setup/set_sysctl.yml --limit localhost
