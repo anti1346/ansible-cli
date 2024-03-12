@@ -1,37 +1,31 @@
 ---
-- name: 시스템 리소스 설정
+- name: 시스템 리소스 설정(/etc/security/limits.conf)
   hosts: all
   become: yes
 
   tasks:
-    - name: Set soft nofile limit
-      sysctl:
-        name: fs.file-max
-        value: 65536
-        state: present
+    - name: Add soft nofile limit to limits.conf
+      lineinfile:
+        path: /etc/security/limits.conf
+        line: '* soft nofile 65536'
       become_user: root
 
-    - name: Set hard nofile limit
-      sysctl:
-        name: fs.file-max
-        value: 65536
-        state: present
-        sysctl_set: yes
+    - name: Add hard nofile limit to limits.conf
+      lineinfile:
+        path: /etc/security/limits.conf
+        line: '* hard nofile 65536'
       become_user: root
 
-    - name: Set soft memlock limit
-      sysctl:
-        name: vm.max_map_count
-        value: 262144
-        state: present
+    - name: Add soft memlock limit to limits.conf
+      lineinfile:
+        path: /etc/security/limits.conf
+        line: '* soft memlock unlimited'
       become_user: root
 
-    - name: Set hard memlock limit
-      sysctl:
-        name: vm.max_map_count
-        value: 262144
-        state: present
-        sysctl_set: yes
+    - name: Add hard memlock limit to limits.conf
+      lineinfile:
+        path: /etc/security/limits.conf
+        line: '* hard memlock unlimited'
       become_user: root
 
 
